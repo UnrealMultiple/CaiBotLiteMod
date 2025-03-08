@@ -44,9 +44,9 @@ public class Packet : ModSystem
                 var name = reader.ReadString().Trim();
                 if (!CaiBotApi.IsWebsocketConnected)
                 {
-                    Console.WriteLine("[CaiBot]机器人处于未连接状态, 玩家无法加入。\n" +
+                    Console.WriteLine("[CaiBotLite]机器人处于未连接状态, 玩家无法加入。\n" +
                                       "如果你不想使用Cai白名单，可以在tshock/CaiBot.json中将其关闭。");
-                    player.Kick("[CaiBot]机器人处于未连接状态, 玩家无法加入。");
+                    player.Kick("[CaiBotLite]机器人处于未连接状态, 玩家无法加入。");
 
                     return false;
                 }
@@ -73,7 +73,7 @@ public class Packet : ModSystem
                     NetMessage.SendData((int) PacketTypes.WorldInfo, player.Index);
                     Main.SyncAnInvasion(player.Index);
                     player.SscLogin = true;
-                    player.SendWarningMessage("[CaiBot]服务器已开启白名单,请使用已绑定的人物名字！");
+                    player.SendWarningMessage("[CaiBotLite]服务器已开启白名单,请使用已绑定的人物名字！");
                     return false;
                 }
 
@@ -86,9 +86,9 @@ public class Packet : ModSystem
                 RestObject re = new () { { "type", "whitelistV2" }, { "name", player.Name }, { "uuid", player.UUID }, { "ip", player.IP } };
                 if (!CaiBotApi.IsWebsocketConnected)
                 {
-                    Console.WriteLine("[CaiBot]机器人处于未连接状态, 玩家无法加入。\n" +
+                    Console.WriteLine("[CaiBotLite]机器人处于未连接状态, 玩家无法加入。\n" +
                                       "如果你不想使用Cai白名单，可以在tshock/CaiBot.json中将其关闭。");
-                    player.Kick("[CaiBot]机器人处于未连接状态, 玩家无法加入。");
+                    player.Kick("[CaiBotLite]机器人处于未连接状态, 玩家无法加入。");
 
                     return false;
                 }
