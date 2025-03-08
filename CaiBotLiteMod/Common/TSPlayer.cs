@@ -35,7 +35,7 @@ using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 using Rectangle = System.Drawing.Rectangle;
 
-namespace CaiBotMod.Common;
+namespace CaiBotLiteMod.Common;
 
 /// <summary>
 ///     Bitflags used with the <see cref="Disable(string, DisableFlags)"></see> method
@@ -108,7 +108,7 @@ public class TSPlayer
     public bool Confused = false;
 
     public string Country = "??";
-    
+
     /// <summary>
     ///     Contains data stored by plugins
     /// </summary>
@@ -118,8 +118,7 @@ public class TSPlayer
     ///     Whether the player should see logs.
     /// </summary>
     public bool DisplayLogs = true;
-
-    private Group group = null!;
+    
 
     /// <summary>
     ///     Whether the player has been nagged about logging in.
@@ -576,7 +575,7 @@ public class TSPlayer
         byte searchID;
         if (byte.TryParse(search, out searchID) && searchID < Main.maxPlayers)
         {
-            var player = CaiBotMod.Players[searchID];
+            var player = CaiBotLiteMod.Players[searchID];
             if (player != null && player.Active)
             {
                 if (exactIndexOnly)
@@ -589,7 +588,7 @@ public class TSPlayer
         }
 
         var searchLower = search.ToLower();
-        foreach (var player in CaiBotMod.Players)
+        foreach (var player in CaiBotLiteMod.Players)
         {
             if (player != null)
             {

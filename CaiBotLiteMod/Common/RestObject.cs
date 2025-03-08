@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CaiBotMod.Common;
+namespace CaiBotLiteMod.Common;
 
 [Serializable]
 public class RestObject : Dictionary<string, object>

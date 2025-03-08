@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CaiBotMod.Common;
+namespace CaiBotLiteMod.Common;
 
 public class ModInfo
 {

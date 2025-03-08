@@ -1,4 +1,4 @@
-﻿namespace CaiBotMod.Common;
+﻿namespace CaiBotLiteMod.Common;
 
 public enum PacketTypes
 {

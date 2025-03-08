@@ -2,7 +2,7 @@
 using System;
 using Terraria;
 
-namespace CaiBotMod.Common;
+namespace CaiBotLiteMod.Common;
 
 [JsonObject(MemberSerialization.OptIn)]
 public struct NetItem

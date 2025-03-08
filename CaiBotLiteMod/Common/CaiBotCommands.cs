@@ -1,6 +1,6 @@
 ﻿using Terraria.ModLoader;
 
-namespace CaiBotMod.Common;
+namespace CaiBotLiteMod.Common;
 
 public class BindCodeCommand : ModCommand
 {
@@ -19,6 +19,6 @@ public class BindCodeCommand : ModCommand
 
     public override void Action(CommandCaller caller, string input, string[] args)
     {
-        CaiBotMod.GenCode();
+        CaiBotLiteMod.GenCode();
     }
 }
