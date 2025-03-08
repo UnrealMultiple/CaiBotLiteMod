@@ -25,13 +25,13 @@ jobs:
     - name: Update version in build.txt
       run: |
         $date = Get-Date -Format "yyyy.MM.dd"
-        (Get-Content CaiBotMod/build.txt) -replace 'version = \d+\.\d+\.\d+', "version = $date" | Set-Content CaiBotMod/build.txt
+        (Get-Content CaiBotLiteMod/build.txt) -replace 'version = \d+\.\d+\.\d+', "version = $date" | Set-Content CaiBotLiteMod/build.txt
 
     - name: Commit changes
       run: |
         git config --global user.name 'github-actions'
         git config --global user.email 'github-actions@github.com'
-        git add CaiBotMod/build.txt
+        git add CaiBotLiteMod/build.txt
         git commit -m "自动更新版本号 [skip ci]"
         git push
       continue-on-error: true
@@ -50,16 +50,16 @@ jobs:
         mkdir -p $ModloaderDir
         export ExtraBuildModFlags="-tmlsavedirectory \"$(cygpath -w $ModloaderDir)\""
         echo ExtraBuildModFlags: $ExtraBuildModFlags
-        dotnet build CaiBotMod/CaiBotMod.csproj --nologo
+        dotnet build CaiBotLiteMod/CaiBotLiteMod.csproj --nologo
         cp -r $ModloaderDir/Mods/. artifacts/Mods/
            
     
     - name: Upload MOD
       uses: actions/upload-artifact@v4
       with:
-        name: CaiBotMod
+        name: CaiBotLiteMod
         path: |
-          ./artifacts/Mods/CaiBotMod.tmod
+          ./artifacts/Mods/CaiBotLiteMod.tmod
 
     - name: Set Release Tag
       id: set_tag
@@ -76,14 +76,14 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ steps.set_tag.outputs.tag }}
-        name: CaiBotMod ${{ steps.set_tag.outputs.tag }}
+        name: CaiBotLiteMod ${{ steps.set_tag.outputs.tag }}
         body: |
-            # CaiBotMod Ciallo～(∠・ω< )⌒☆
+            # CaiBotLiteMod Ciallo～(∠・ω< )⌒☆
             ###  📅 只推荐使用最新版CaiBot扩展
             ###  📖 MOD版本的CaiBot扩展功能有所缩减
             ###  📦 Auto Build By Github Action
         artifacts: |
-          ./artifacts/Mods/CaiBotMod.tmod
+          ./artifacts/Mods/CaiBotLiteMod.tmod
         allowUpdates: true
         removeArtifacts: true
     
