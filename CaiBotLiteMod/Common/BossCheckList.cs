@@ -15,7 +15,7 @@ public static class BossCheckList
     {
         if (ModLoader.TryGetMod("BossChecklist", out var bossChecklist) && bossChecklist.Version >= BossChecklistAPIVersion)
         {
-            var currentBossInfoResponse = bossChecklist.Call("GetBossInfoDictionary", ModLoader.GetMod("CaiBotMod"), BossChecklistAPIVersion.ToString());
+            var currentBossInfoResponse = bossChecklist.Call("GetBossInfoDictionary", ModLoader.GetMod("CaiBotLiteMod"), BossChecklistAPIVersion.ToString());
             if (currentBossInfoResponse is Dictionary<string, Dictionary<string, object>> bossInfoList)
             {
                 return bossInfoList.ToDictionary(boss => boss.Key, boss => new BossChecklistBossInfo()

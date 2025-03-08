@@ -1,4 +1,4 @@
-displayName = CaiBot扩展插件
+displayName = CaiBotLite扩展插件
 author = Cai
 version = 2025.03.08
 dllReferences=SixLabors.ImageSharp,Newtonsoft.Json

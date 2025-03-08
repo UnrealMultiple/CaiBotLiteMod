@@ -21,6 +21,7 @@ public static class ExecuteCommandHook
     private static readonly Hook WriteHook = new (
         typeof(Console).GetMethod(nameof(Console.Write), [typeof(string)])!,
         typeof(ExecuteCommandHook).GetMethod(nameof(Write), BindingFlags.Static| BindingFlags.NonPublic)!);
+    
 
     private static void WriteLine(Action<string> orig, string text)
     {
@@ -38,6 +39,11 @@ public static class ExecuteCommandHook
         {
             _outPut.Append(text);
         }
+    }
+
+    public static void Reply(string text)
+    {
+        _outPut.AppendLine(text);
     }
 
     public static void Clean()

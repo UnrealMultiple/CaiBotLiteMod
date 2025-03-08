@@ -71,7 +71,11 @@ public static class CaiBotApi
                 ExecuteCommandHook.Clean();
                 try
                 {
-                    Main.ExecuteCommand(cmd, caller);
+                    Main.ExecuteCommand(cmd[1..], caller);
+                }
+                catch (Exception e)
+                {
+                    ExecuteCommandHook.Reply(e.ToString());
                 }
                 finally
                 {
@@ -79,14 +83,14 @@ public static class CaiBotApi
                 }
 
 
-                Console.WriteLine($"[CaiBotLite] `{(string) jsonObject["at"]!}`来自群`{(string) jsonObject["group"]!}`执行了: {(string) jsonObject["cmd"]!}");
+                Console.WriteLine($"[CaiBotLite]`{(string) jsonObject["at"]!}`来自群`{(string) jsonObject["group"]!}`执行了: {(string) jsonObject["cmd"]!}");
 
                 packetWriter.SetType("cmd")
-                    .Write("result", string.Join('\n', ExecuteCommandHook.GetCommandOutput()))
+                    .Write("result", string.Join('\n', ExecuteCommandHook.GetCommandOutput()[2..]))
                     .Send();
                 break;
             case "online":
-                var online = Main.player.Where(i => i != null && i.active).ToArray();
+                var online = Main.player.Where(i => i is { active: true }).ToArray();
                 var onlineResult = new StringBuilder();
                 if (online.Length == 0)
                 {

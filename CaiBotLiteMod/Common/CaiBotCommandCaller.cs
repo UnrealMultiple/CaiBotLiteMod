@@ -1,25 +1,18 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using CaiBotLiteMod.Hooks;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
-using Terraria.UI.Chat;
 
 namespace CaiBotLiteMod.Common;
 
 public class CaiBotCommandCaller : CommandCaller
 {
-    private CommandType _commandType = CommandType.Console;
-    private Player _player = null!;
-
     public void Reply(string text, Color color = new ())
     {
-        return;
+        ExecuteCommandHook.Reply(text);
     }
 
-    public CommandType CommandType => this._commandType;
+    public CommandType CommandType => CommandType.Console;
 
-    public Player Player => this._player;
+    public Player Player => null!;
 }
