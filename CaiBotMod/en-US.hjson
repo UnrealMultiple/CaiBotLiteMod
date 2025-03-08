@@ -1,0 +1,19 @@
+Mods: {
+	CaiBotMod: {
+		Items: {
+			法律鱼: {
+				DisplayName: 法律鱼
+				Tooltip: ""
+			}
+		}
+	}
+
+	CaibotExtension: {
+		Items: {
+			法律鱼: {
+				DisplayName: 法律鱼
+				Tooltip: ""
+			}
+		}
+	}
+}
