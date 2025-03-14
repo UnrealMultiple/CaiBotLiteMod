@@ -210,7 +210,7 @@ internal static class Utils
         #endregion
     }
 
-    internal static string FileToBase64String(string path)
+    internal static string FileToBase64String(string path,bool deleteSource = false)
     {
         FileStream fsForRead = new (path, FileMode.Open); //文件路径
         var base64Str = "";
@@ -231,6 +231,10 @@ internal static class Utils
         finally
         {
             fsForRead.Close();
+            if (deleteSource && File.Exists(path))
+            {
+                File.Delete(path);
+            }
         }
     }
 
