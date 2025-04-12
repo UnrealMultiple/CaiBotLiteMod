@@ -16,11 +16,11 @@ namespace CaiBotLiteMod;
 
 public class CaiBotLiteMod : Mod
 {
-    public static int InitCode = -1;
+    private static int InitCode = -1;
     public static bool DebugMode;
     public static bool StopWebsocket;
 
-    internal static ClientWebSocket WebSocket
+    internal static ClientWebSocket? WebSocket
     {
         get => PacketWriter.WebSocket;
         set => PacketWriter.WebSocket = value;
@@ -44,7 +44,7 @@ public class CaiBotLiteMod : Mod
         {
             GenCode();
         }
-
+        
         PacketWriter.Init(true, DebugMode);
         ExecuteCommandHook.Apply();
         Task.Factory.StartNew(StartCaiApi, TaskCreationOptions.LongRunning);
@@ -54,7 +54,7 @@ public class CaiBotLiteMod : Mod
     public override void Unload()
     {
         StopWebsocket = true;
-        WebSocket.Dispose();
+        WebSocket?.Dispose();
         ExecuteCommandHook.Dispose();
     }
 
@@ -66,7 +66,7 @@ public class CaiBotLiteMod : Mod
             await Task.Delay(TimeSpan.FromSeconds(60));
             try
             {
-                if (WebSocket.State == WebSocketState.Open)
+                if (WebSocket is { State: WebSocketState.Open })
                 {
                     var packetWriter = new PacketWriter();
                     packetWriter.SetType("HeartBeat")

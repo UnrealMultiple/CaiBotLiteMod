@@ -12,7 +12,7 @@ public class PacketWriter : Dictionary<string, object>
 {
     public static bool Debug;
     public static bool IsLiteMessage;
-    public static ClientWebSocket WebSocket = null!;
+    public static ClientWebSocket? WebSocket = null;
     private readonly long _groupId;
     private readonly string _groupOpenId;
     private readonly string _msgId;
