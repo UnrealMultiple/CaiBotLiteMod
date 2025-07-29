@@ -1,4 +1,5 @@
-﻿using CaiBotLiteMod.Moudles;
+﻿using CaiBotLiteMod.Enums;
+using CaiBotLiteMod.Moudles;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -86,7 +87,7 @@ public static class WebsocketManager
 
                 WebSocket.Options.SetRequestHeader("authorization", $"Bearer {Config.Settings.Token}");
                 // await WebSocket.ConnectAsync(new Uri($"wss://{BotServerUrl}/server/ws/{Config.Settings.GroupOpenId}/tshock/{Config.Settings.Token}/"), CancellationToken.None);
-                await WebSocket.ConnectAsync(new Uri($"ws://{BotServerUrl}/server/ws/{Config.Settings.GroupOpenId}/tModLoader/"), CancellationToken.None);
+                await WebSocket.ConnectAsync(new Uri($"wss://{BotServerUrl}/server/ws/{Config.Settings.GroupOpenId}/tModLoader/"), CancellationToken.None);
 
                new PackageWriter(PackageType.Hello, false, null)
                     .Write("server_core_version", ModLoader.versionedName)

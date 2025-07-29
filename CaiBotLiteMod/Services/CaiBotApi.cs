@@ -1,4 +1,5 @@
-﻿using CaiBotLiteMod.Hooks;
+﻿using CaiBotLiteMod.Enums;
+using CaiBotLiteMod.Hooks;
 using CaiBotLiteMod.Moudles;
 using SixLabors.ImageSharp.Formats.Png;
 using System;

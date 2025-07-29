@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Text;
 using Color = System.Drawing.Color;
 
-namespace CaiBotLiteMod.Services;
+namespace CaiBotLiteMod;
 
 /// <summary>
 ///     Provides tools for sending paginated output.

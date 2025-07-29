@@ -1,4 +1,5 @@
-﻿using CaiBotLiteMod.Moudles;
+﻿using CaiBotLiteMod.Enums;
+using CaiBotLiteMod.Moudles;
 using System;
 using System.Linq;
 

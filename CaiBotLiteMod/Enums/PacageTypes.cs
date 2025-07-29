@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CaiBotLiteMod.Moudles;
+namespace CaiBotLiteMod.Enums;
 
 [Serializable]
 public enum PackageType
