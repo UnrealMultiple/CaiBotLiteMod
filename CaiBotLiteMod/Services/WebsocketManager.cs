@@ -141,7 +141,10 @@ public static class WebsocketManager
             catch (Exception ex)
             {
                 Console.WriteLine("[CaiBotLite]Bot断开连接...");
-                Console.WriteLine(ex.ToString());
+                if (!_isStopWebsocket)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
             }
 
             await Task.Delay(5000);
