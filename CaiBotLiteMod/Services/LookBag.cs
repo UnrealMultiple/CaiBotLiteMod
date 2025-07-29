@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using Terraria;
+
 #pragma warning disable CS0414 // 字段已被赋值，但它的值从未被使用
 
-namespace CaiBotLiteMod.Common;
+namespace CaiBotLiteMod.Services;
 
 internal class LookBag
 {
@@ -14,9 +15,9 @@ internal class LookBag
     public int MaxMana= 0;
     public int QuestsCompleted= 0;
 
-    public readonly List<List<int>> ItemList = new ();
-    public readonly List<int> Enhances = new ();
-    public List<int> Buffs = new ();
+    public readonly List<List<int>> ItemList = [];
+    public readonly List<int> Enhances = [];
+    public List<int> Buffs = [];
 
     // public static LookBag LookOffline(UserAccount acc, PlayerData data)
     // {

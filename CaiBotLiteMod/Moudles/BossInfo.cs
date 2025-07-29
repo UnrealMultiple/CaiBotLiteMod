@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.Localization;
 
-namespace CaiBotLiteMod.Common;
+namespace CaiBotLiteMod.Moudles;
 
 public class BossChecklistBossInfo
 {
@@ -18,13 +18,13 @@ public class BossChecklistBossInfo
     internal bool IsMiniboss = false;
     internal bool IsEvent = false;
 
-    internal List<int> NpcIDs = new ();
+    internal List<int> NpcIDs = [];
     internal Func<LocalizedText> SpawnInfo = null!;
-    internal List<int> SpawnItems = new ();
+    internal List<int> SpawnItems = [];
     internal int TreasureBag = 0;
-    internal List<DropRateInfo> DropRateInfo = new ();
-    internal List<int> Loot = new ();
-    internal List<int> Collectibles = new ();
+    internal List<DropRateInfo> DropRateInfo = [];
+    internal List<int> Loot = [];
+    internal List<int> Collectibles = [];
 
     public override string ToString()
     {

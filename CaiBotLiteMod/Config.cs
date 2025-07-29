@@ -1,20 +1,26 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
 
-namespace CaiBotLiteMod.Common;
+namespace CaiBotLiteMod;
 
 public class Config
 {
     private const string ConfigPath = "CaiBotLite.json";
     public static Config Settings = new ();
 
-    [JsonProperty("白名单开关", Order = 1)] public bool WhiteList = true;
+    [JsonProperty("白名单开关")] 
+    public bool WhiteList = true;
 
-    [JsonProperty("密钥", Order = 2)] public string Token = "";
+    [JsonProperty("密钥")] 
+    public string Token = "";
 
-    [JsonProperty("白名单拦截提示的群号", Order = 3)]
+    [JsonProperty("在线显示进度")] public bool ShowProcessInPlayerList = true;
+
+    [JsonProperty("群OpenID")] public string GroupOpenId = "114514";
+
+    [JsonProperty("白名单拦截提示的群号")]
     public long GroupNumber;
-
+    
 
     /// <summary>
     /// 将配置文件写入硬盘
@@ -29,7 +35,7 @@ public class Config
     /// <summary>
     /// 从硬盘读取配置文件
     /// </summary>
-    internal static void Read()
+    internal void Read()
     {
         Config result;
         if (!File.Exists(ConfigPath))

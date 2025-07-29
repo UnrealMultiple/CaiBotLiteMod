@@ -8,12 +8,12 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="SixLabors.ImageSharp">
-            <HintPath>..\..\..\..\..\..\source\repos\TShockPlugin\lib\SixLabors.ImageSharp.dll</HintPath>
-        </Reference>
-    </ItemGroup>
-    <ItemGroup>
-        <Folder Include="Localization\"/>
+      <Reference Include="Newtonsoft.Json">
+        <HintPath>lib\Newtonsoft.Json.dll</HintPath>
+      </Reference>
+      <Reference Include="SixLabors.ImageSharp">
+        <HintPath>lib\SixLabors.ImageSharp.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 

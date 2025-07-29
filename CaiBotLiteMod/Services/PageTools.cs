@@ -1,11 +1,12 @@
-﻿using System;
+﻿using CaiBotLiteMod.Moudles;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Color = System.Drawing.Color;
 
-namespace CaiBotLiteMod.Common;
+namespace CaiBotLiteMod.Services;
 
 /// <summary>
 ///     Provides tools for sending paginated output.
@@ -153,7 +154,7 @@ public static class PaginationTools
     public static List<string> BuildLinesFromTerms(IEnumerable terms, Func<object, string> termFormatter = null!,
         string separator = ", ", int maxCharsPerLine = 80)
     {
-        List<string> lines = new ();
+        List<string> lines = [];
         StringBuilder lineBuilder = new ();
 
         foreach (var term in terms)

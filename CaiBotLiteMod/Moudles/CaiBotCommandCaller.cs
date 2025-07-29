@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CaiBotLiteMod.Common;
+namespace CaiBotLiteMod.Moudles;
 
 public class CaiBotCommandCaller : CommandCaller
 {

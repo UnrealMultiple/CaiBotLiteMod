@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+using CaiBotLiteMod.Services;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Concurrent;
@@ -35,7 +36,7 @@ using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 using Rectangle = System.Drawing.Rectangle;
 
-namespace CaiBotLiteMod.Common;
+namespace CaiBotLiteMod.Moudles;
 
 /// <summary>
 ///     Bitflags used with the <see cref="Disable(string, DisableFlags)"></see> method
@@ -550,7 +551,7 @@ public class TSPlayer
     /// <returns>A list of matching players</returns>
     public static List<TSPlayer> FindByNameOrID(string search)
     {
-        List<TSPlayer> found = new ();
+        List<TSPlayer> found = [];
 
         search = search.Trim();
 
@@ -580,7 +581,7 @@ public class TSPlayer
             {
                 if (exactIndexOnly)
                 {
-                    return new List<TSPlayer> { player };
+                    return [player];
                 }
 
                 found.Add(player);
@@ -594,7 +595,7 @@ public class TSPlayer
             {
                 if (search == player.Name && exactNameOnly)
                 {
-                    return new List<TSPlayer> { player };
+                    return [player];
                 }
 
                 if (player.Name.ToLower().StartsWith(searchLower))
@@ -694,7 +695,7 @@ public class TSPlayer
     /// <param name="reason">The reason why the player was disconnected.</param>
     public virtual void Disconnect(string reason)
     {
-        this.SendData(PacketTypes.Disconnect, reason);
+        this.SendData(MessageID.Kick, reason);
     }
 
     /// <summary>
@@ -741,7 +742,7 @@ public class TSPlayer
 
         this.SendTileSquareCentered((int) (x / 16), (int) (y / 16), 15);
         this.TPlayer.Teleport(new Vector2(x, y), style);
-        NetMessage.SendData((int) PacketTypes.Teleport, -1, -1, NetworkText.Empty, 0, this.TPlayer.whoAmI, x, y, style);
+        NetMessage.SendData(MessageID.TeleportEntity, -1, -1, NetworkText.Empty, 0, this.TPlayer.whoAmI, x, y, style);
         return true;
     }
 
@@ -751,7 +752,7 @@ public class TSPlayer
     /// <param name="health">Heal health amount.</param>
     public void Heal(int health = 600)
     {
-        NetMessage.SendData((int) PacketTypes.PlayerHealOther, -1, -1, NetworkText.Empty, this.TPlayer.whoAmI, health);
+        NetMessage.SendData(MessageID.PlayerHeal, -1, -1, NetworkText.Empty, this.TPlayer.whoAmI, health);
     }
 
     /// <summary>
@@ -895,8 +896,8 @@ public class TSPlayer
         var itemIndex = Item.NewItem(new EntitySource_DebugCommand(null), (int) this.X, (int) this.Y, this.TPlayer.width, this.TPlayer.height,
             type, stack, true, prefix, true);
         Main.item[itemIndex].playerIndexTheItemIsReservedFor = this.Index;
-        this.SendData(PacketTypes.ItemDrop, "", itemIndex, 1);
-        this.SendData(PacketTypes.ItemOwner, "", itemIndex);
+        this.SendData(MessageID.SyncItem, "", itemIndex, 1);
+        this.SendData(MessageID.ItemOwner, "", itemIndex);
     }
 
     /// <summary>
@@ -1095,7 +1096,7 @@ public class TSPlayer
         }
 
         Main.player[this.Index].team = team;
-        NetMessage.SendData((int) PacketTypes.PlayerTeam, -1, -1, NetworkText.Empty, this.Index);
+        NetMessage.SendData(MessageID.PlayerTeam, -1, -1, NetworkText.Empty, this.Index);
     }
 
     /// <summary>
@@ -1106,7 +1107,7 @@ public class TSPlayer
     public virtual void SetPvP(bool mode, bool withMsg = false)
     {
         Main.player[this.Index].hostile = mode;
-        NetMessage.SendData((int) PacketTypes.TogglePvp, -1, -1, NetworkText.Empty, this.Index);
+        NetMessage.SendData(MessageID.TogglePVP, -1, -1, NetworkText.Empty, this.Index);
         if (withMsg)
         {
             All.SendMessage(Language.GetTextValue(mode ? "LegacyMultiplayer.11" : "LegacyMultiplayer.12", this.Name),
@@ -1143,7 +1144,7 @@ public class TSPlayer
         var startname = this.Name;
         while ((DateTime.UtcNow - launch).TotalSeconds < time2 && startname == this.Name)
         {
-            this.SendData(PacketTypes.NpcSpecial, number: this.Index, number2: 2f);
+            this.SendData(MessageID.MiscDataSync, number: this.Index, number2: 2f);
             Thread.Sleep(50);
         }
     }
@@ -1161,7 +1162,7 @@ public class TSPlayer
             return;
         }
 
-        this.SendData(PacketTypes.PlayerAddBuff, number: this.Index, number2: type, number3: time);
+        this.SendData(MessageID.AddPlayerBuff, number: this.Index, number2: type, number3: time);
     }
 
     //Todo: Separate this into a few functions. SendTo, SendToAll, etc
@@ -1175,7 +1176,7 @@ public class TSPlayer
     /// <param name="number3"></param>
     /// <param name="number4"></param>
     /// <param name="number5"></param>
-    public virtual void SendData(PacketTypes msgType, string text = "", int number = 0, float number2 = 0f,
+    public virtual void SendData(byte msgType, string text = "", int number = 0, float number2 = 0f,
         float number3 = 0f, float number4 = 0f, int number5 = 0)
     {
         if (this.RealPlayer && !this.ConnectionAlive)
@@ -1183,7 +1184,7 @@ public class TSPlayer
             return;
         }
 
-        NetMessage.SendData((int) msgType, this.Index, -1, text == null ? null : NetworkText.FromLiteral(text), number,
+        NetMessage.SendData(msgType, this.Index, -1, text == null ? null : NetworkText.FromLiteral(text), number,
             number2, number3, number4, number5);
     }
 
@@ -1197,7 +1198,7 @@ public class TSPlayer
     /// <param name="number3"></param>
     /// <param name="number4"></param>
     /// <param name="number5"></param>
-    public virtual void SendDataFromPlayer(PacketTypes msgType, int ply, string text = "", float number2 = 0f,
+    public virtual void SendDataFromPlayer(byte msgType, int ply, string text = "", float number2 = 0f,
         float number3 = 0f, float number4 = 0f, int number5 = 0)
     {
         if (this.RealPlayer && !this.ConnectionAlive)
@@ -1253,7 +1254,7 @@ public class TSPlayer
 
 public class TSRestPlayer : TSPlayer
 {
-    internal List<string?> CommandOutput = new ();
+    internal List<string?> CommandOutput = [];
 
     public TSRestPlayer(string playerName, Group playerGroup) : base(playerName)
     {

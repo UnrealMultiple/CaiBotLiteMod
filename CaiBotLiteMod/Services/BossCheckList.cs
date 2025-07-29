@@ -1,11 +1,12 @@
-﻿using System;
+﻿using CaiBotLiteMod.Moudles;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CaiBotLiteMod.Common;
+namespace CaiBotLiteMod.Services;
 
 public static class BossCheckList
 {
@@ -18,7 +19,7 @@ public static class BossCheckList
             var currentBossInfoResponse = bossChecklist.Call("GetBossInfoDictionary", ModLoader.GetMod("CaiBotLiteMod"), BossChecklistAPIVersion.ToString());
             if (currentBossInfoResponse is Dictionary<string, Dictionary<string, object>> bossInfoList)
             {
-                return bossInfoList.ToDictionary(boss => boss.Key, boss => new BossChecklistBossInfo()
+                return bossInfoList.ToDictionary(boss => boss.Key, boss => new BossChecklistBossInfo
                 {
                     Key = (boss.Value.ContainsKey("key") ? boss.Value["key"] as string : "")!,
                     ModSource = (boss.Value.ContainsKey("modSource") ? boss.Value["modSource"] as string : "")!,
@@ -28,17 +29,17 @@ public static class BossCheckList
                     IsBoss = boss.Value.ContainsKey("isBoss") ? Convert.ToBoolean(boss.Value["isBoss"]) : false,
                     IsMiniboss = boss.Value.ContainsKey("isMiniboss") ? Convert.ToBoolean(boss.Value["isMiniboss"]) : false,
                     IsEvent = boss.Value.ContainsKey("isEvent") ? Convert.ToBoolean(boss.Value["isEvent"]) : false,
-                    NpcIDs = (boss.Value.ContainsKey("npcIDs") ? boss.Value["npcIDs"] as List<int> : new List<int>())!,
+                    NpcIDs = (boss.Value.ContainsKey("npcIDs") ? boss.Value["npcIDs"] as List<int> : [])!,
                     SpawnInfo = (boss.Value.ContainsKey("spawnInfo") ? boss.Value["spawnInfo"] as Func<LocalizedText> : null)!,
-                    SpawnItems = (boss.Value.ContainsKey("spawnItems") ? boss.Value["spawnItems"] as List<int> : new List<int>())!,
+                    SpawnItems = (boss.Value.ContainsKey("spawnItems") ? boss.Value["spawnItems"] as List<int> : [])!,
                     TreasureBag = boss.Value.ContainsKey("treasureBag") ? Convert.ToInt32(boss.Value["treasureBag"]) : 0,
-                    DropRateInfo = (boss.Value.ContainsKey("dropRateInfo") ? boss.Value["dropRateInfo"] as List<DropRateInfo> : new List<DropRateInfo>())!,
-                    Loot = (boss.Value.ContainsKey("loot") ? boss.Value["loot"] as List<int> : new List<int>())!,
-                    Collectibles = (boss.Value.ContainsKey("collectibles") ? boss.Value["collectibles"] as List<int> : new List<int>())!
+                    DropRateInfo = (boss.Value.ContainsKey("dropRateInfo") ? boss.Value["dropRateInfo"] as List<DropRateInfo> : [])!,
+                    Loot = (boss.Value.ContainsKey("loot") ? boss.Value["loot"] as List<int> : [])!,
+                    Collectibles = (boss.Value.ContainsKey("collectibles") ? boss.Value["collectibles"] as List<int> : [])!
                 }).Values.ToList();
             }
         }
 
-        return new List<BossChecklistBossInfo>();
+        return [];
     }
 }

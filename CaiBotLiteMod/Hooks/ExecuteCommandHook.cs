@@ -1,8 +1,7 @@
-﻿using CaiBotLiteMod.Common;
-using Terraria.ModLoader;
-using MonoMod.RuntimeDetour;
+﻿using MonoMod.RuntimeDetour;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -51,9 +50,25 @@ public static class ExecuteCommandHook
         _outPut = new StringBuilder();
     }
 
-    public static string GetCommandOutput()
+    public static List<string> GetCommandOutput()
     {
-        return _outPut.ToString();
+        if (_outPut.Length == 0)
+        {
+            return [];
+        }
+
+      
+        if (_outPut.Length > 0 && _outPut[0] == ':')
+        {
+            _outPut.Remove(0, 2);
+        }
+        
+        var lines = _outPut.ToString()
+            .Split(["\r\n", "\n", "\r"], StringSplitOptions.None)
+            .Where(x=>x!="")
+            .ToList();
+
+        return lines;
     }
 
     public static void Apply()

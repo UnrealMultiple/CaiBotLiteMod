@@ -11,11 +11,11 @@ using Terraria.ModLoader;
 using Image = SixLabors.ImageSharp.Image;
 
 
-namespace CaiBotLiteMod;
+namespace CaiBotLiteMod.Services;
 
 internal static class MapGenerator
 {
-    private static bool _inited = false;
+    private static bool _inited;
     
     private static void Init()
     {
@@ -116,7 +116,7 @@ internal static class MapGenerator
             }
         }
 
-        return (Common.Utils.FileToBase64String(zipPath, false), zipName);
+        return (Utils.FileToBase64String(zipPath), zipName);
         
     }
 }
