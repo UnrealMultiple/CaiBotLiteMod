@@ -96,7 +96,7 @@ public static class CaiBotApi
                         .Write("player_list",Main.player.Where(x => x is { active: true }).Select(x => x.name))
                         .Write("current_online", Main.player.Count(x => x is { active: true }))
                         .Write("max_online", Main.maxNetPlayers)
-                        .Write("process", onlineProcess)
+                        .Write("process",Config.Settings.ShowProcessInPlayerList?onlineProcess:"")
                         .Send();
                     break;
 
