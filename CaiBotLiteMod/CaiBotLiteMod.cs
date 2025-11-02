@@ -12,7 +12,7 @@ public class CaiBotLiteMod : Mod
 {
     internal static int InitCode = -1;
     internal static bool DebugMode;
-    
+
     public static readonly Version PluginVersion = ModLoader.GetMod("CaiBotLiteMod").Version;
     public static readonly TSPlayer?[] Players = new TSPlayer[256];
 
@@ -23,6 +23,7 @@ public class CaiBotLiteMod : Mod
         {
             return;
         }
+
         DebugMode = Program.LaunchParameters.ContainsKey("-caidebug");
         Config.Settings.Read();
         Config.Settings.Write();
@@ -40,7 +41,7 @@ public class CaiBotLiteMod : Mod
         WebsocketManager.WebSocket.Dispose();
         ExecuteCommandHook.Dispose();
     }
-    
+
 
     public static void GenCode()
     {

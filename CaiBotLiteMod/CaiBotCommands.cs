@@ -12,7 +12,7 @@ public class BindCodeCommand : ModCommand
 
     public override string Command
         => "生成绑定码";
-    
+
     public override string Description
         => "生成一个CaiBot绑定码";
 
@@ -29,16 +29,16 @@ public class TestCommand : ModCommand
 
     public override string Command
         => "t";
-    
+
     public override string Description
         => "Test";
 
     public override void Action(CommandCaller caller, string input, string[] args)
     {
-        Console.WriteLine(JsonConvert.SerializeObject(ModLoader.Mods.Where(i=> i!=null).Select(i=> i.Name)));
+        Console.WriteLine(JsonConvert.SerializeObject(ModLoader.Mods.Where(i => i != null).Select(i => i.Name)));
         var mod = ModLoader.GetMod("MagicStorage");
         var asset = mod.Assets.GetLoadedAssets();
-        
+
         Console.WriteLine(asset.Length);
     }
 }

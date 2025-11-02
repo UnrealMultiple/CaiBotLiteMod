@@ -51,9 +51,9 @@ public class Package(Direction direction, PackageType type, bool isRequest, stri
             {
                 if (Enum.GetNames(typeof(T)).Any(name => string.Equals(name, "Unknown", StringComparison.OrdinalIgnoreCase)))
                 {
-                    return (T)Enum.Parse(typeof(T), "Unknown", true);
+                    return (T) Enum.Parse(typeof(T), "Unknown", true);
                 }
-                
+
                 throw new InvalidCastException($"Cannot convert string '{stringValue}' to enum {typeof(T).Name}", ex);
             }
         }

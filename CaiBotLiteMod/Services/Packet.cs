@@ -33,6 +33,7 @@ public class Packet : ModSystem
                 {
                     return true;
                 }
+
                 break;
             case MessageID.SyncPlayer:
                 if (!Config.Settings.WhiteList || !player!.SSCLogin || player.LoginQueue || player.IsLoggedIn)
@@ -86,7 +87,7 @@ public class Packet : ModSystem
                     player.Kick("[Cai白名单]玩家名获取失败!");
                     return false;
                 }
-                
+
                 if (!WebsocketManager.IsWebsocketConnected)
                 {
                     Console.WriteLine("[CaiBotLite]机器人处于未连接状态, 玩家无法加入。\n" +
