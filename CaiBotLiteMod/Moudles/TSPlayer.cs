@@ -262,54 +262,9 @@ public class TSPlayer
         this.AwaitingResponse = new Dictionary<string, Action<object>>();
     }
 
-    /// <summary>
-    ///     Used in preventing players from seeing the npc spawnrate permission error on join.
-    /// </summary>
-    internal bool HasReceivedNPCPermissionError { get; set; }
+    public bool LoginQueue { get; set; }
 
-    /// <summary>
-    ///     The amount of tiles that the player has killed in the last second.
-    /// </summary>
-    public int TileKillThreshold { get; set; }
-
-    /// <summary>
-    ///     The amount of tiles the player has placed in the last second.
-    /// </summary>
-    public int TilePlaceThreshold { get; set; }
-
-    /// <summary>
-    ///     The amount of liquid (in tiles) that the player has placed in the last second.
-    /// </summary>
-    public int TileLiquidThreshold { get; set; }
-
-    /// <summary>
-    ///     The amount of tiles that the player has painted in the last second.
-    /// </summary>
-    public int PaintThreshold { get; set; }
-
-    /// <summary>
-    ///     The number of projectiles created by the player in the last second.
-    /// </summary>
-    public int ProjectileThreshold { get; set; }
-
-    /// <summary>
-    ///     The number of HealOtherPlayer packets sent by the player in the last second.
-    /// </summary>
-    public int HealOtherThreshold { get; set; }
-
-    /// <summary>
-    ///     Whether to ignore packets that are SSC-relevant.
-    /// </summary>
-    public bool IgnoreSSCPackets { get; set; }
-
-    /// <summary>
-    ///     A queue of tiles destroyed by the player for reverting.
-    /// </summary>
-    /// <summary>
-    ///     The player's group.
-    /// </summary>
-
-    public bool ReceivedInfo { get; set; }
+    public bool SSCLogin { get; set; }
 
     /// <summary>
     ///     The players index in the player array( Main.players[] ).

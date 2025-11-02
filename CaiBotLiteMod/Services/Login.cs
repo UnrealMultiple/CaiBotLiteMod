@@ -38,6 +38,7 @@ internal static class Login
                 case WhiteListResult.Accept:
                 {
                     Console.WriteLine($"[Cai白名单]玩家[{name}](IP: {player.IP})已通过白名单验证...");
+                    player.IsLoggedIn = true;
                     break;
                 }
                 case WhiteListResult.NotInWhitelist:

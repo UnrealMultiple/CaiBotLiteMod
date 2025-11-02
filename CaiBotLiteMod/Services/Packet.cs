@@ -29,14 +29,13 @@ public class Packet : ModSystem
                 CaiBotLiteMod.Players[playerNumber] = new TSPlayer(playerNumber);
                 break;
             case MessageID.RequestWorldData:
-                if (Config.Settings.WhiteList && !player!.SscLogin)
+                if (Config.Settings.WhiteList && !player!.SSCLogin)
                 {
                     return true;
                 }
                 break;
             case MessageID.SyncPlayer:
-
-                if (!Config.Settings.WhiteList || !player!.SscLogin || player.IsLoggedIn)
+                if (!Config.Settings.WhiteList || !player!.SSCLogin || player.LoginQueue || player.IsLoggedIn)
                 {
                     return false;
                 }
@@ -54,6 +53,9 @@ public class Packet : ModSystem
 
                     return false;
                 }
+
+                player.LoginQueue = true;
+
                 new PackageWriter(PackageType.Whitelist, false, null)
                     .Write("player_name", name)
                     .Write("player_ip", player.IP)
@@ -63,7 +65,8 @@ public class Packet : ModSystem
 
             case MessageID.ClientUUID:
                 player!.UUID = reader.ReadString();
-                if (!Config.Settings.WhiteList)
+
+                if (!Config.Settings.WhiteList || player.LoginQueue || player.IsLoggedIn)
                 {
                     return false;
                 }
@@ -73,7 +76,7 @@ public class Packet : ModSystem
                     Netplay.Clients[player.Index].State = 2;
                     NetMessage.SendData(MessageID.WorldData, player.Index);
                     Main.SyncAnInvasion(player.Index);
-                    player.SscLogin = true;
+                    player.SSCLogin = true;
                     player.SendWarningMessage("[CaiBotLite]服务器已开启白名单,请使用已绑定的人物名字！");
                     return false;
                 }
@@ -92,7 +95,9 @@ public class Packet : ModSystem
 
                     return false;
                 }
-                
+
+                player.LoginQueue = true;
+
                 new PackageWriter(PackageType.Whitelist, false, null)
                     .Write("player_name", player.Name)
                     .Write("player_ip", player.IP)
