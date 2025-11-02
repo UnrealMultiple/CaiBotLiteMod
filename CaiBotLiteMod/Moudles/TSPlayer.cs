@@ -16,54 +16,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-using CaiBotLiteMod.Services;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Timers;
 using Terraria;
 using Terraria.Chat;
 using Terraria.DataStructures;
-using Terraria.GameContent.Creative;
 using Terraria.ID;
 using Terraria.Localization;
-using Timer = System.Timers.Timer;
 using Color = System.Drawing.Color;
-using Point = System.Drawing.Point;
 using Rectangle = System.Drawing.Rectangle;
 
 namespace CaiBotLiteMod.Moudles;
-
-/// <summary>
-///     Bitflags used with the <see cref="Disable(string, DisableFlags)"></see> method
-/// </summary>
-[Flags]
-public enum DisableFlags
-{
-    /// <summary>
-    ///     Disable the player and leave no messages
-    /// </summary>
-    None,
-
-    /// <summary>
-    ///     Write the Disable message to the console
-    /// </summary>
-    WriteToConsole,
-
-    /// <summary>
-    ///     Write the Disable message to the log
-    /// </summary>
-    WriteToLog,
-
-    /// <summary>
-    ///     Equivalent to WriteToConsole | WriteToLog
-    /// </summary>
-    WriteToLogAndConsole
-}
 
 public class TSPlayer
 {
@@ -83,18 +49,6 @@ public class TSPlayer
 
     private readonly Player FakePlayer = null!;
 
-    private int _respawnTimer;
-
-    /// <summary>
-    ///     Whether the player is accepting whispers from other users
-    /// </summary>
-    public bool AcceptingWhispers = true;
-
-    /// <summary>
-    ///     Represents the ID of the chest that the player is viewing.
-    /// </summary>
-    public int ActiveChest = -1;
-
 
     /// <summary>
     ///     A list of command callbacks indexed by the command they need to do.
@@ -104,145 +58,16 @@ public class TSPlayer
     private string CacheIP = null!;
 
     /// <summary>
-    ///     Players controls are inverted if using SSC
-    /// </summary>
-    public bool Confused = false;
-
-    public string Country = "??";
-
-    /// <summary>
     ///     Contains data stored by plugins
     /// </summary>
     protected ConcurrentDictionary<string, object> data = new ();
 
-    /// <summary>
-    ///     Whether the player should see logs.
-    /// </summary>
-    public bool DisplayLogs = true;
-    
-
-    /// <summary>
-    ///     Whether the player has been nagged about logging in.
-    /// </summary>
-    public bool HasBeenNaggedAboutLoggingIn;
 
     /// <summary>
     ///     Whether the player is logged in or not.
     /// </summary>
     public bool IsLoggedIn;
 
-    /// <summary>
-    ///     Represents the current item the player is holding.
-    /// </summary>
-    public Item ItemInHand = new ();
-
-    private DateTime LastDisableNotification = DateTime.UtcNow;
-
-    /// <summary>
-    ///     The last projectile type this player tried to kill.
-    /// </summary>
-    public int LastKilledProjectile = 0;
-
-    /// <summary>
-    ///     The player's last known position from PlayerUpdate packet.
-    /// </summary>
-    public Vector2 LastNetPosition = Vector2.Zero;
-
-
-    /// <summary>
-    ///     The last time the player was warned for build permissions.
-    ///     In MS, defaults to 1 (so it will warn on the first attempt).
-    /// </summary>
-    public long lastPermissionWarning = 1;
-
-    /// <summary>
-    ///     The last time the player changed their team or pvp status.
-    /// </summary>
-    public DateTime LastPvPTeamChange;
-
-    /// <summary>
-    ///     The last player that the player whispered with (to or from).
-    /// </summary>
-    public TSPlayer LastWhisper = null!;
-
-    /// <summary>
-    ///     Whether the player has been harrassed about logging in due to server side inventory or forced login.
-    /// </summary>
-    public bool LoginHarassed = false;
-
-    /// <summary>
-    ///     The time in ms when the player has logged in.
-    /// </summary>
-    public long LoginMS;
-
-    /// <summary>
-    ///     Whether the player is muted or not.
-    /// </summary>
-    public bool mute;
-
-    /// <summary>
-    ///     A timer to keep track of whether or not the player has recently thrown an explosive
-    /// </summary>
-    public int RecentFuse = 0;
-
-    public bool RequestedSection;
-
-    /// <summary>
-    ///     Easy check if a player has any of IsDisabledForSSC, IsDisabledForStackDetection, IsDisabledForBannedWearable,
-    ///     or IsDisabledPendingTrashRemoval set. Or if they're not logged in and a login is required.
-    /// </summary>
-    /// <returns>
-    ///     If any of the checks that warrant disabling are set on this player. If true, Disable() is repeatedly called on
-    ///     them.
-    /// </returns>
-    /// <summary>
-    ///     Whether the player needs to specify a password upon connection( either server or user account ).
-    /// </summary>
-    public bool RequiresPassword;
-
-    /// <summary>
-    ///     A system to delay Remembered Position Teleports a few seconds
-    /// </summary>
-    public int RPPending = 0;
-
-    public bool SilentJoinInProgress;
-
-    public bool SilentKickInProgress;
-
-    public bool SscLogin = false;
-
-    public int sX = -1;
-    public int sY = -1;
-
-    /// <summary>
-    ///     Unused.
-    /// </summary>
-    public Vector2 TeleportCoords = new (-1, -1);
-
-    /// <summary>
-    ///     The player's temporary group.  This overrides the user's actual group.
-    /// </summary>
-    public Group tempGroup = null!;
-
-    public Timer tempGroupTimer = null!;
-
-    /// <summary>
-    ///     Temp points for use in regions and other plugins.
-    /// </summary>
-    public Point[] TempPoints = new Point[2];
-
-    /// <summary>
-    ///     Whether other players can teleport to the player.
-    /// </summary>
-    public bool TPAllow = true;
-
-    /// <summary>
-    ///     Logs the player out of an account.
-    /// </summary>
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="TSPlayer" /> class.
-    /// </summary>
-    /// <param name="index">The player's index in the.</param>
     public TSPlayer(int index)
     {
         this.Index = index;
@@ -255,109 +80,28 @@ public class TSPlayer
     ///     Initializes a new instance of the <see cref="TSPlayer" /> class.
     /// </summary>
     /// <param name="playerName">The player's name.</param>
-    protected TSPlayer(string playerName)
+    private TSPlayer(string playerName)
     {
         this.Index = -1;
         this.FakePlayer = new Player { name = playerName, whoAmI = -1 };
         this.AwaitingResponse = new Dictionary<string, Action<object>>();
     }
 
-    /// <summary>
-    ///     Used in preventing players from seeing the npc spawnrate permission error on join.
-    /// </summary>
-    internal bool HasReceivedNPCPermissionError { get; set; }
+    public bool LoginQueue { get; set; }
+
+    public bool SSCLogin { get; set; }
 
     /// <summary>
-    ///     The amount of tiles that the player has killed in the last second.
+    ///     The players index in the player array.
     /// </summary>
-    public int TileKillThreshold { get; set; }
+    public int Index { get; }
 
-    /// <summary>
-    ///     The amount of tiles the player has placed in the last second.
-    /// </summary>
-    public int TilePlaceThreshold { get; set; }
-
-    /// <summary>
-    ///     The amount of liquid (in tiles) that the player has placed in the last second.
-    /// </summary>
-    public int TileLiquidThreshold { get; set; }
-
-    /// <summary>
-    ///     The amount of tiles that the player has painted in the last second.
-    /// </summary>
-    public int PaintThreshold { get; set; }
-
-    /// <summary>
-    ///     The number of projectiles created by the player in the last second.
-    /// </summary>
-    public int ProjectileThreshold { get; set; }
-
-    /// <summary>
-    ///     The number of HealOtherPlayer packets sent by the player in the last second.
-    /// </summary>
-    public int HealOtherThreshold { get; set; }
-
-    /// <summary>
-    ///     Whether to ignore packets that are SSC-relevant.
-    /// </summary>
-    public bool IgnoreSSCPackets { get; set; }
-
-    /// <summary>
-    ///     A queue of tiles destroyed by the player for reverting.
-    /// </summary>
-    /// <summary>
-    ///     The player's group.
-    /// </summary>
-
-    public bool ReceivedInfo { get; set; }
-
-    /// <summary>
-    ///     The players index in the player array( Main.players[] ).
-    /// </summary>
-    public int Index { get; protected set; }
-
-    /// <summary>
-    ///     Whether the player is waiting to place/break a tile to set as a temp point.
-    /// </summary>
-    public int AwaitingTempPoint { get; set; }
-
-    public bool AwaitingName { get; set; }
-
-    public string[] AwaitingNameParameters { get; set; } = null!;
 
     /// <summary>
     ///     The last time a player broke a grief check.
     /// </summary>
     public DateTime LastThreat { get; set; }
 
-    /// <summary>
-    ///     The number of unsuccessful login attempts.
-    /// </summary>
-    public int LoginAttempts { get; set; }
-
-    /// <summary>
-    ///     UserAccount object associated with the player.
-    ///     Set when the player logs in.
-    /// </summary>
-    /// <summary>
-    ///     Whether the player performed a valid login attempt (i.e. entered valid user name and password) but is still blocked
-    ///     from logging in because of SSI.
-    /// </summary>
-    public bool LoginFailsBySsi { get; set; }
-
-    /// <summary>
-    ///     Whether the player has sent their whole inventory to the server while connecting.
-    /// </summary>
-    public bool HasSentInventory { get; set; }
-
-    /// <summary>
-    ///     The player's respawn timer.
-    /// </summary>
-    public int RespawnTimer
-    {
-        get => this._respawnTimer;
-        set => this.TPlayer.respawnTimer = (this._respawnTimer = value) * 60;
-    }
 
     /// <summary>
     ///     Whether the player is dead or not.
@@ -370,37 +114,9 @@ public class TSPlayer
         set => UUIDs[this.Index] = value;
     }
 
-    /// <summary>
-    ///     The players difficulty( normal[softcore], mediumcore, hardcore ).
-    /// </summary>
-    public int Difficulty => this.TPlayer.difficulty;
 
-    /// <summary>
-    ///     Controls the journey godmode
-    /// </summary>
-    public bool GodMode
-    {
-        get =>
-            CreativePowerManager.Instance.GetPower<CreativePowers.GodmodePower>().IsEnabledForPlayer(this.Index);
-        set =>
-            CreativePowerManager.Instance.GetPower<CreativePowers.GodmodePower>().SetEnabledState(this.Index, value);
-    }
-
-    /// <summary>
-    ///     Whether the player is a real, human, player on the server.
-    /// </summary>
     public bool RealPlayer => this.Index >= 0 && this.Index < Main.maxNetPlayers && Main.player[this.Index] != null;
 
-    /// <summary>
-    ///     Checks if the player is active and not pending termination.
-    /// </summary>
-    public bool ConnectionAlive =>
-        this.RealPlayer && this.Client is { IsActive: true, PendingTermination: false };
-
-    /// <summary>
-    ///     Gets the item that the player is currently holding.
-    /// </summary>
-    public Item SelectedItem => this.TPlayer.inventory[this.TPlayer.selectedItem];
 
     /// <summary>
     ///     Gets the player's Client State.
@@ -419,16 +135,13 @@ public class TSPlayer
     {
         get
         {
-            if (string.IsNullOrEmpty(this.CacheIP))
-            {
-                return this.CacheIP = (this.RealPlayer
+            return string.IsNullOrEmpty(this.CacheIP)
+                ? this.CacheIP = this.RealPlayer
                     ? this.Client.Socket.IsConnected()
                         ? this.Client.Socket.GetRemoteAddress().ToString()!.Split(':')[0]
                         : ""
-                    : "127.0.0.1")!;
-            }
-
-            return this.CacheIP;
+                    : "127.0.0.1"
+                : this.CacheIP;
         }
     }
 
@@ -693,23 +406,11 @@ public class TSPlayer
     ///     Disconnects the player from the server.
     /// </summary>
     /// <param name="reason">The reason why the player was disconnected.</param>
-    public virtual void Disconnect(string reason)
+    public void Disconnect(string reason)
     {
         this.SendData(MessageID.Kick, reason);
     }
 
-    /// <summary>
-    ///     Fired when the player's temporary group access expires.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="args"></param>
-    public void TempGroupTimerElapsed(object sender, ElapsedEventArgs args)
-    {
-        this.SendWarningMessage("Your temporary group access has expired.");
-
-        this.tempGroup = null!;
-        ((Timer) sender)?.Stop();
-    }
 
     /// <summary>
     ///     Teleports the player to the given coordinates in the world.
@@ -771,7 +472,7 @@ public class TSPlayer
     [Obsolete(
         "This method may not send tiles the way you would expect it to. The (x,y) coordinates are the top left corner of the tile square, switch to " +
         nameof(SendTileSquareCentered) + " if you wish for the coordindates to be the center of the square.")]
-    public virtual bool SendTileSquare(int x, int y, int size = 10)
+    public bool SendTileSquare(int x, int y, int size = 10)
     {
         return this.SendTileRect((short) x, (short) y, (byte) size, (byte) size);
     }
@@ -786,7 +487,7 @@ public class TSPlayer
     /// <param name="y">The y coordinates of the center of the square.</param>
     /// <param name="size">The size square set of tiles to send.</param>
     /// <returns>true if the tile square was sent successfully, else false</returns>
-    public virtual bool SendTileSquareCentered(int x, int y, byte size = 10)
+    public bool SendTileSquareCentered(int x, int y, byte size = 10)
     {
         return this.SendTileRect((short) (x - (size / 2)), (short) (y - (size / 2)), size, size);
     }
@@ -800,7 +501,7 @@ public class TSPlayer
     /// <param name="length">The length of the rectangle</param>
     /// <param name="changeType">Optional change type. Default None</param>
     /// <returns></returns>
-    public virtual bool SendTileRect(short x, short y, byte width = 10, byte length = 10,
+    public bool SendTileRect(short x, short y, byte width = 10, byte length = 10,
         TileChangeType changeType = TileChangeType.None)
     {
         try
@@ -860,7 +561,7 @@ public class TSPlayer
     /// <param name="type">The item ID.</param>
     /// <param name="stack">The item stack.</param>
     /// <param name="prefix">The item prefix.</param>
-    public virtual void GiveItem(int type, int stack, int prefix = 0)
+    public void GiveItem(int type, int stack, int prefix = 0)
     {
         this.GiveItemByDrop(type, stack, prefix);
     }
@@ -904,7 +605,7 @@ public class TSPlayer
     ///     Sends an information message to the player.
     /// </summary>
     /// <param name="msg">The message.</param>
-    public virtual void SendInfoMessage(string? msg)
+    public void SendInfoMessage(string? msg)
     {
         this.SendMessage(msg, Color.Yellow);
     }
@@ -924,7 +625,7 @@ public class TSPlayer
     ///     Sends a success message to the player.
     /// </summary>
     /// <param name="msg">The message.</param>
-    public virtual void SendSuccessMessage(string? msg)
+    public void SendSuccessMessage(string? msg)
     {
         this.SendMessage(msg, Color.LimeGreen);
     }
@@ -944,7 +645,7 @@ public class TSPlayer
     ///     Sends a warning message to the player.
     /// </summary>
     /// <param name="msg">The message.</param>
-    public virtual void SendWarningMessage(string? msg)
+    public void SendWarningMessage(string? msg)
     {
         this.SendMessage(msg, Color.OrangeRed);
     }
@@ -964,7 +665,7 @@ public class TSPlayer
     ///     Sends an error message to the player.
     /// </summary>
     /// <param name="msg">The message.</param>
-    public virtual void SendErrorMessage(string? msg)
+    public void SendErrorMessage(string? msg)
     {
         this.SendMessage(msg, Color.Red);
     }
@@ -985,7 +686,7 @@ public class TSPlayer
     /// </summary>
     /// <param name="msg">The message.</param>
     /// <param name="color">The message color.</param>
-    public virtual void SendMessage(string? msg, Color color)
+    public void SendMessage(string? msg, Color color)
     {
         this.SendMessage(msg!, color.R, color.G, color.B);
     }
@@ -997,7 +698,7 @@ public class TSPlayer
     /// <param name="red">The amount of red color to factor in. Max: 255.</param>
     /// <param name="green">The amount of green color to factor in. Max: 255</param>
     /// <param name="blue">The amount of blue color to factor in. Max: 255</param>
-    public virtual void SendMessage(string msg, byte red, byte green, byte blue)
+    public void SendMessage(string msg, byte red, byte green, byte blue)
     {
         if (msg.Contains("\n"))
         {
@@ -1030,7 +731,7 @@ public class TSPlayer
     /// <param name="green">The amount of green color to factor in. Max: 255.</param>
     /// <param name="blue">The amount of blue color to factor in. Max: 255.</param>
     /// <param name="ply">The player who receives the message.</param>
-    public virtual void SendMessageFromPlayer(string msg, byte red, byte green, byte blue, int ply)
+    public void SendMessageFromPlayer(string msg, byte red, byte green, byte blue, int ply)
     {
         if (msg.Contains("\n"))
         {
@@ -1052,7 +753,7 @@ public class TSPlayer
     ///     Wounds the player with the given damage.
     /// </summary>
     /// <param name="damage">The amount of damage the player will take.</param>
-    public virtual void DamagePlayer(int damage)
+    public void DamagePlayer(int damage)
     {
         this.DamagePlayer(damage, PlayerDeathReason.LegacyDefault());
     }
@@ -1062,7 +763,7 @@ public class TSPlayer
     /// </summary>
     /// <param name="damage">The amount of damage the player will take.</param>
     /// <param name="reason">The reason for causing damage to player.</param>
-    public virtual void DamagePlayer(int damage, PlayerDeathReason reason)
+    public void DamagePlayer(int damage, PlayerDeathReason reason)
     {
         NetMessage.SendPlayerHurt(this.Index, new Player.HurtInfo { Damage = damage, DamageSource = reason });
     }
@@ -1070,7 +771,7 @@ public class TSPlayer
     /// <summary>
     ///     Kills the player.
     /// </summary>
-    public virtual void KillPlayer()
+    public void KillPlayer()
     {
         this.KillPlayer(PlayerDeathReason.LegacyDefault());
     }
@@ -1079,7 +780,7 @@ public class TSPlayer
     ///     Kills the player.
     /// </summary>
     /// <param name="reason">Reason for killing a player.</param>
-    public virtual void KillPlayer(PlayerDeathReason reason)
+    public void KillPlayer(PlayerDeathReason reason)
     {
         NetMessage.SendPlayerDeath(this.Index, reason, 99999, new Random().Next(-1, 1), false);
     }
@@ -1088,7 +789,7 @@ public class TSPlayer
     ///     Sets the player's team.
     /// </summary>
     /// <param name="team">The team color index.</param>
-    public virtual void SetTeam(int team)
+    public void SetTeam(int team)
     {
         if (team < 0 || team >= Main.teamColor.Length)
         {
@@ -1104,7 +805,7 @@ public class TSPlayer
     /// </summary>
     /// <param name="mode">The state of the pvp mode.</param>
     /// <param name="withMsg">Whether a chat message about the change should be sent.</param>
-    public virtual void SetPvP(bool mode, bool withMsg = false)
+    public void SetPvP(bool mode, bool withMsg = false)
     {
         Main.player[this.Index].hostile = mode;
         NetMessage.SendData(MessageID.TogglePVP, -1, -1, NetworkText.Empty, this.Index);
@@ -1134,28 +835,12 @@ public class TSPlayer
 
 
     /// <summary>
-    ///     Annoys the player for a specified amount of time.
-    /// </summary>
-    /// <param name="time">The</param>
-    public virtual void Whoopie(object time)
-    {
-        var time2 = (int) time;
-        var launch = DateTime.UtcNow;
-        var startname = this.Name;
-        while ((DateTime.UtcNow - launch).TotalSeconds < time2 && startname == this.Name)
-        {
-            this.SendData(MessageID.MiscDataSync, number: this.Index, number2: 2f);
-            Thread.Sleep(50);
-        }
-    }
-
-    /// <summary>
     ///     Applies a buff to the player.
     /// </summary>
     /// <param name="type">The buff type.</param>
     /// <param name="time">The buff duration.</param>
     /// <param name="bypass"></param>
-    public virtual void SetBuff(int type, int time = 3600, bool bypass = false)
+    public void SetBuff(int type, int time = 3600, bool bypass = false)
     {
         if ((DateTime.UtcNow - this.LastThreat).TotalMilliseconds < 5000 && !bypass)
         {
@@ -1176,10 +861,10 @@ public class TSPlayer
     /// <param name="number3"></param>
     /// <param name="number4"></param>
     /// <param name="number5"></param>
-    public virtual void SendData(byte msgType, string text = "", int number = 0, float number2 = 0f,
+    public void SendData(byte msgType, string? text = "", int number = 0, float number2 = 0f,
         float number3 = 0f, float number4 = 0f, int number5 = 0)
     {
-        if (this.RealPlayer && !this.ConnectionAlive)
+        if (this.RealPlayer)
         {
             return;
         }
@@ -1189,34 +874,12 @@ public class TSPlayer
     }
 
     /// <summary>
-    ///     Sends data from the given player.
-    /// </summary>
-    /// <param name="msgType">The sent packet.</param>
-    /// <param name="ply">The packet sender.</param>
-    /// <param name="text">The packet text.</param>
-    /// <param name="number2"></param>
-    /// <param name="number3"></param>
-    /// <param name="number4"></param>
-    /// <param name="number5"></param>
-    public virtual void SendDataFromPlayer(byte msgType, int ply, string text = "", float number2 = 0f,
-        float number3 = 0f, float number4 = 0f, int number5 = 0)
-    {
-        if (this.RealPlayer && !this.ConnectionAlive)
-        {
-            return;
-        }
-
-        NetMessage.SendData((int) msgType, this.Index, -1, NetworkText.FromFormattable(text), ply, number2, number3, number4,
-            number5);
-    }
-
-    /// <summary>
     ///     Sends raw data to the player's socket object.
     /// </summary>
     /// <param name="data">The data to send.</param>
-    public virtual void SendRawData(byte[] data)
+    public void SendRawData(byte[] data)
     {
-        if (!this.RealPlayer || !this.ConnectionAlive)
+        if (!this.RealPlayer)
         {
             return;
         }
@@ -1224,75 +887,9 @@ public class TSPlayer
         this.Client.Socket.AsyncSend(data, 0, data.Length, this.Client.ServerWriteCallBack);
     }
 
-    /// <summary>
-    ///     Adds a command callback to a specified command string.
-    /// </summary>
-    /// <param name="name">The string representing the command i.e "yes" == /yes</param>
-    /// <param name="callback">The method that will be executed on confirmation ie user accepts</param>
-    public void AddResponse(string name, Action<object> callback)
-    {
-        if (this.AwaitingResponse.ContainsKey(name))
-        {
-            this.AwaitingResponse.Remove(name);
-        }
-
-        this.AwaitingResponse.Add(name, callback);
-    }
 
     public void Kick(string reason)
     {
         NetMessage.SendData(MessageID.Kick, this.Index, -1, NetworkText.FromLiteral(reason));
-    }
-
-    private enum BuildPermissionFailPoint
-    {
-        GeneralBuild,
-        SpawnProtect,
-        Regions
-    }
-}
-
-public class TSRestPlayer : TSPlayer
-{
-    internal List<string?> CommandOutput = [];
-
-    public TSRestPlayer(string playerName, Group playerGroup) : base(playerName)
-    {
-        this.AwaitingResponse = new Dictionary<string, Action<object>>();
-    }
-
-    public override void SendMessage(string? msg, Color color)
-    {
-        this.SendMessage(msg, color.R, color.G, color.B);
-    }
-
-    public override void SendMessage(string? msg, byte red, byte green, byte blue)
-    {
-        this.CommandOutput.Add(msg);
-    }
-
-    public override void SendInfoMessage(string? msg)
-    {
-        this.SendMessage(msg, Color.Yellow);
-    }
-
-    public override void SendSuccessMessage(string? msg)
-    {
-        this.SendMessage(msg, Color.Green);
-    }
-
-    public override void SendWarningMessage(string? msg)
-    {
-        this.SendMessage(msg, Color.OrangeRed);
-    }
-
-    public override void SendErrorMessage(string? msg)
-    {
-        this.SendMessage(msg, Color.Red);
-    }
-
-    public List<string?> GetCommandOutput()
-    {
-        return this.CommandOutput;
     }
 }

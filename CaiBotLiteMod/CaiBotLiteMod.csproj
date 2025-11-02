@@ -15,6 +15,9 @@
         <HintPath>lib\SixLabors.ImageSharp.dll</HintPath>
       </Reference>
     </ItemGroup>
+    <ItemGroup>
+      <PackageReference Update="tModLoader.CodeAssist" Version="0.1.5" />
+    </ItemGroup>
 
 
     <!-- References -->

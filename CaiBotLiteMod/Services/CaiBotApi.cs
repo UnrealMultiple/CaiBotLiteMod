@@ -39,7 +39,7 @@ public static class CaiBotApi
                 case PackageType.CallCommand:
                     var command = package.Read<string>("command");
                     var userOpenId = package.Read<string>("user_open_id");
-                    var groupOpenId = package.Read<string>("group_open_id"); 
+                    var groupOpenId = package.Read<string>("group_open_id");
 
                     var caller = new CaiBotCommandCaller();
                     ExecuteCommandHook.StartHook = true;
@@ -63,7 +63,7 @@ public static class CaiBotApi
                         .Write("output", ExecuteCommandHook.GetCommandOutput())
                         .Send();
                     break;
-                
+
                 case PackageType.PlayerList:
                     var bigBossList = BossCheckList.GetBossList().Where(x => x is { IsBoss: true, IsMiniboss: false }).OrderByDescending(x => x.Progression).ToList();
                     var onlineProcess = "不可用";
@@ -72,7 +72,6 @@ public static class CaiBotApi
                         if (bigBossList[0].Downed())
                         {
                             onlineProcess = "已毕业";
-
                         }
                         else if (!bigBossList[^1].Downed())
                         {
@@ -89,19 +88,19 @@ public static class CaiBotApi
                                 }
                             }
                         }
-
                     }
+
                     packetWriter
                         .Write("server_name", string.IsNullOrEmpty(Main.worldName) ? "地图还没加载捏~" : Main.worldName)
-                        .Write("player_list",Main.player.Where(x => x is { active: true }).Select(x => x.name))
+                        .Write("player_list", Main.player.Where(x => x is { active: true }).Select(x => x.name))
                         .Write("current_online", Main.player.Count(x => x is { active: true }))
                         .Write("max_online", Main.maxNetPlayers)
-                        .Write("process",Config.Settings.ShowProcessInPlayerList?onlineProcess:"")
+                        .Write("process", Config.Settings.ShowProcessInPlayerList ? onlineProcess : "")
                         .Send();
                     break;
 
                 case PackageType.Progress:
-                    var bossList = BossCheckList.GetBossList().Where(x => x.IsBoss && !x.IsMiniboss).OrderBy(x => x.Progression).ToList();
+                    var bossList = BossCheckList.GetBossList().Where(x => x is { IsBoss: true, IsMiniboss: false }).OrderBy(x => x.Progression).ToList();
                     var eventList = BossCheckList.GetBossList().Where(x => x.IsEvent || x.IsMiniboss).OrderBy(x => x.Progression).ToList();
                     if (bossList.Count == 0)
                     {
@@ -126,7 +125,7 @@ public static class CaiBotApi
                     var whitelistResult = package.Read<WhiteListResult>("whitelist_result");
                     Login.CheckWhitelist(name, whitelistResult);
                     break;
-                
+
                 case PackageType.SelfKick:
                     var selfKickName = package.Read<string>("name");
                     var kickPlr = CaiBotLiteMod.Players.FirstOrDefault(x => x?.Name == selfKickName);
@@ -145,7 +144,7 @@ public static class CaiBotApi
                         var imageBytes = ms.ToArray();
                         var base64 = Convert.ToBase64String(imageBytes);
                         packetWriter
-                            .Write("result",Utils.CompressBase64(base64))
+                            .Write("result", Utils.CompressBase64(base64))
                             .Send();
                     }
 
@@ -181,16 +180,15 @@ public static class CaiBotApi
                         .Send();
 
                     break;
-
                 }
                 case PackageType.LookBag:
                     var lookBagName = package.Read<string>("player_name");
                     var playerList3 = TSPlayer.FindByNameOrID("tsn:" + lookBagName);
-                    
+
                     packetWriter
                         .Write("is_text", true)
                         .Write("name", lookBagName);
-                    
+
                     if (playerList3.Count != 0)
                     {
                         var plr = playerList3[0].TPlayer;
@@ -222,9 +220,8 @@ public static class CaiBotApi
         catch (Exception ex)
         {
             Console.WriteLine($"[CaiBotLite] 处理BOT数据包时出错:\n" +
-                                    $"{ex}\n" +
-                                    $"源数据包: {receivedData}");
+                              $"{ex}\n" +
+                              $"源数据包: {receivedData}");
         }
-        
     }
 }
