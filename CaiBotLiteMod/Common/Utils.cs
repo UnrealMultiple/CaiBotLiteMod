@@ -14,8 +14,19 @@ namespace CaiBotLiteMod;
 
 internal static class Utils
 {
-
+    internal static void WriteLine(string? value, ConsoleColor color)
+    {
+        Console.ForegroundColor = color;
+        Console.WriteLine(value);
+        Console.ResetColor();
+    }
     
+    internal static void Write(string? value, ConsoleColor color)
+    {
+        Console.ForegroundColor = color;
+        Console.Write(value);
+        Console.ResetColor();
+    }
     internal static string GetWorldIconName()
     {
         var data = Main.ActiveWorldFileData;

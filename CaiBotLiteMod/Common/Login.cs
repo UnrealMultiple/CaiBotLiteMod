@@ -1,35 +1,23 @@
 ﻿using CaiBotLiteMod.Enums;
-using CaiBotLiteMod.Moudles;
 using System;
 using System.Linq;
+using Terraria.ModLoader;
 
-namespace CaiBotLiteMod.Services;
+namespace CaiBotLiteMod.Common;
 
 internal static class Login
 {
     internal static bool CheckWhitelist(string name, WhiteListResult result)
     {
         var player = CaiBotLiteMod.Players.FirstOrDefault(x => x?.Name == name);
-
-        var groupId = Config.Settings.GroupNumber.ToString();
-
-        if (Config.Settings.GroupNumber == 0)
-        {
-            groupId = "";
-        }
-
+        
         if (player == null)
         {
             return false;
         }
 
-        if (string.IsNullOrEmpty(name))
-        {
-            Console.WriteLine($"[Cai白名单]玩家[{name}](IP: {player.IP})版本可能过低...");
-            player.Disconnect("你的游戏版本可能过低,\n" +
-                              "请使用Terraria1.4.4+游玩");
-            return false;
-        }
+        var groupId = ModContent.GetInstance<ServerConfig>().GroupNumber.ToString();
+        groupId = groupId == "0" ? "" : groupId;
 
         try
         {

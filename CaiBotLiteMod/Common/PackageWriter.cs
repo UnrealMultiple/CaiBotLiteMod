@@ -4,9 +4,8 @@ using System;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
-namespace CaiBotLiteMod.Services;
+namespace CaiBotLiteMod.Common;
 
 [Serializable]
 public class PackageWriter(PackageType packageType, bool isRequest, string? requestId)
@@ -36,7 +35,7 @@ public class PackageWriter(PackageType packageType, bool isRequest, string? requ
         }
         catch (Exception e)
         {
-            Console.WriteLine($"[CaiBotLite]发送数据包时发生错误：{e}");
+            Utils.WriteLine($"[CaiBotLite]发送数据包时发生错误：{e}", ConsoleColor.Red);
         }
     }
 }

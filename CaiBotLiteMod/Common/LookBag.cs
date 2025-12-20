@@ -4,7 +4,7 @@ using Terraria;
 
 #pragma warning disable CS0414 // 字段已被赋值，但它的值从未被使用
 
-namespace CaiBotLiteMod.Services;
+namespace CaiBotLiteMod.Common;
 
 internal class LookBag
 {

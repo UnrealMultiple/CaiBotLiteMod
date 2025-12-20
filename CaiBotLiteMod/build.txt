@@ -3,4 +3,4 @@ author = Cai
 version = 2025.11.02
 dllReferences = SixLabors.ImageSharp,Newtonsoft.Json
 buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*, Old\*
-side = Server
+side = Both

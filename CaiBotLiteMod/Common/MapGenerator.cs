@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 using Image = SixLabors.ImageSharp.Image;
 
 
-namespace CaiBotLiteMod.Services;
+namespace CaiBotLiteMod.Common;
 
 internal static class MapGenerator
 {

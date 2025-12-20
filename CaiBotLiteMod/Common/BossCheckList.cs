@@ -6,7 +6,7 @@ using Terraria.GameContent.ItemDropRules;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CaiBotLiteMod.Services;
+namespace CaiBotLiteMod.Common;
 
 public static class BossCheckList
 {

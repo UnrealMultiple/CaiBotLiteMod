@@ -1,6 +1,6 @@
+using CaiBotLiteMod.Common;
 using CaiBotLiteMod.Hooks;
 using CaiBotLiteMod.Moudles;
-using CaiBotLiteMod.Services;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -25,11 +25,11 @@ public class CaiBotLiteMod : Mod
         }
 
         DebugMode = Program.LaunchParameters.ContainsKey("-caidebug");
-        Config.Settings.Read();
-        Config.Settings.Write();
         WebsocketManager.Init();
         ExecuteCommandHook.Apply();
-        if (Config.Settings.Token == "")
+        
+        
+        if (string.IsNullOrEmpty(ModContent.GetInstance<ClientConfig>().Token))
         {
             GenCode();
         }
@@ -45,22 +45,15 @@ public class CaiBotLiteMod : Mod
 
     public static void GenCode()
     {
-        if (Config.Settings.Token != "")
+        if (!string.IsNullOrEmpty(ModContent.GetInstance<ClientConfig>().Token))
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("[CaiBotLite]你已经绑定过了!");
-            Console.ResetColor();
+            Utils.WriteLine("[CaiBotLite]你已经绑定过了!", ConsoleColor.Red);
             return;
         }
-
-        Random rnd = new ();
-        InitCode = rnd.Next(10000000, 99999999);
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write("[CaiBotLite]您的服务器绑定码为: ");
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(InitCode);
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine("*你可以在启动服务器后使用'/生成绑定码'重新生成");
-        Console.ResetColor();
+        
+        InitCode = Main.rand.Next(10000000, 99999999);
+        Utils.Write("[CaiBotLite]您的服务器绑定码为: ", ConsoleColor.Green);
+        Utils.WriteLine(InitCode.ToString(), ConsoleColor.Red);
+        Utils.WriteLine("*你可以在启动服务器后使用'/生成绑定码'重新生成", ConsoleColor.Magenta);
     }
 }

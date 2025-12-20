@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CaiBotLiteMod.Services;
+namespace CaiBotLiteMod.Common;
 
 // ReSharper disable once UnusedType.Global
 public class Packet : ModSystem
@@ -29,14 +29,14 @@ public class Packet : ModSystem
                 CaiBotLiteMod.Players[playerNumber] = new TSPlayer(playerNumber);
                 break;
             case MessageID.RequestWorldData:
-                if (Config.Settings.WhiteList && !player!.SSCLogin)
+                if (ModContent.GetInstance<ServerConfig>().EnableWhiteList && !player!.SscLogin)
                 {
                     return true;
                 }
-
                 break;
             case MessageID.SyncPlayer:
-                if (!Config.Settings.WhiteList || !player!.SSCLogin || player.LoginQueue || player.IsLoggedIn)
+
+                if (!ModContent.GetInstance<ServerConfig>().EnableWhiteList || !player!.SscLogin || player.IsLoggedIn)
                 {
                     return false;
                 }
@@ -54,9 +54,6 @@ public class Packet : ModSystem
 
                     return false;
                 }
-
-                player.LoginQueue = true;
-
                 new PackageWriter(PackageType.Whitelist, false, null)
                     .Write("player_name", name)
                     .Write("player_ip", player.IP)
@@ -66,8 +63,7 @@ public class Packet : ModSystem
 
             case MessageID.ClientUUID:
                 player!.UUID = reader.ReadString();
-
-                if (!Config.Settings.WhiteList || player.LoginQueue || player.IsLoggedIn)
+                if (!ModContent.GetInstance<ServerConfig>().EnableWhiteList)
                 {
                     return false;
                 }
@@ -77,7 +73,7 @@ public class Packet : ModSystem
                     Netplay.Clients[player.Index].State = 2;
                     NetMessage.SendData(MessageID.WorldData, player.Index);
                     Main.SyncAnInvasion(player.Index);
-                    player.SSCLogin = true;
+                    player.SscLogin = true;
                     player.SendWarningMessage("[CaiBotLite]服务器已开启白名单,请使用已绑定的人物名字！");
                     return false;
                 }
@@ -87,7 +83,7 @@ public class Packet : ModSystem
                     player.Kick("[Cai白名单]玩家名获取失败!");
                     return false;
                 }
-
+                
                 if (!WebsocketManager.IsWebsocketConnected)
                 {
                     Console.WriteLine("[CaiBotLite]机器人处于未连接状态, 玩家无法加入。\n" +
@@ -96,9 +92,7 @@ public class Packet : ModSystem
 
                     return false;
                 }
-
-                player.LoginQueue = true;
-
+                
                 new PackageWriter(PackageType.Whitelist, false, null)
                     .Write("player_name", player.Name)
                     .Write("player_ip", player.IP)

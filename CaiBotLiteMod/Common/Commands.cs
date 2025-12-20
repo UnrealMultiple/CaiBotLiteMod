@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using Terraria.ModLoader;
 
-namespace CaiBotLiteMod;
+namespace CaiBotLiteMod.Common;
 
 public class BindCodeCommand : ModCommand
 {

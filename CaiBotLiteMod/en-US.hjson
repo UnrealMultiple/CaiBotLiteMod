@@ -16,4 +16,43 @@ Mods: {
 			}
 		}
 	}
+
+	CaiBotLiteMod: {
+		Config: {
+			GroupNumber: {
+				LocalizedTooltip: ""
+				LocalizedLabel: Group Number
+			}
+
+			ShowProcessInPlayerList: {
+				LocalizedTooltip: ""
+				LocalizedLabel: Show Process In Player List
+			}
+
+			EnableSsc: {
+				LocalizedTooltip: ""
+				LocalizedLabel: Enable Ssc
+			}
+
+			EnableWhiteList: {
+				LocalizedTooltip: ""
+				LocalizedLabel: Enable White List
+			}
+
+			GroupOpenId: {
+				LocalizedTooltip: ""
+				LocalizedLabel: Group Open Id
+			}
+
+			Token: {
+				LocalizedTooltip: ""
+				LocalizedLabel: Token
+			}
+		}
+
+		Configs: {
+			ServerConfig.DisplayName: Server Config
+			ClientConfig.DisplayName: Client Config
+		}
+	}
 }
