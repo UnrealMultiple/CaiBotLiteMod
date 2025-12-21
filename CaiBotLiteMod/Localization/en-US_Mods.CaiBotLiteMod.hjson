@@ -1,0 +1,127 @@
+Configs: {
+	ServerConfig: {
+		GroupNumber: {
+			Tooltip: ""
+			Label: Group Number
+		}
+
+		ShowProcessInPlayerList: {
+			Tooltip: ""
+			Label: Show Process In Player List
+		}
+
+		BanClientMods: {
+			Tooltip: ""
+			Label: Ban Client Mods
+		}
+
+		StartItems: {
+			Tooltip: ""
+			Label: Start Items
+		}
+
+		SaveInterval: {
+			Tooltip: ""
+			Label: Save Interval
+		}
+
+		Headers: {
+			SSC: SSC Header
+			General: General Header
+		}
+
+		EnableWhiteList: {
+			Tooltip: ""
+			Label: Enable White List
+		}
+
+		DisplayName: Server Config
+
+		EnableSSC: {
+			Label: Enable S S C
+			Tooltip: ""
+		}
+
+		DifficultyId: {
+			Label: Difficulty Id
+			Tooltip: ""
+		}
+
+		StartLifeMax: {
+			Label: Start Life Max
+			Tooltip: ""
+		}
+
+		StartManaMax: {
+			Label: Start Mana Max
+			Tooltip: ""
+		}
+
+		SendBroadcastAfterSaveSuccess: {
+			Label: Send Broadcast After Save Success
+			Tooltip: ""
+		}
+
+		SendSuccessMessage: {
+			Label: Send Success Message
+			Tooltip: ""
+		}
+	}
+
+	ClientConfig: {
+		GroupOpenId: {
+			Tooltip: ""
+			Label: Group Open Id
+		}
+
+		Token: {
+			Tooltip: ""
+			Label: Token
+		}
+
+		DisplayName: Client Config
+	}
+
+	InitItem: {
+		Tooltip: ""
+
+		ItemDefinition: {
+			Label: Item Definition
+			Tooltip: ""
+		}
+
+		Stack: {
+			Label: Stack
+			Tooltip: ""
+		}
+
+		Prefix: {
+			Label: Prefix
+			Tooltip: ""
+		}
+	}
+
+	PlayerDifficultyId: {
+		Tooltip: ""
+
+		SoftCore: {
+			Label: Soft Core
+			Tooltip: ""
+		}
+
+		MediumCore: {
+			Label: Medium Core
+			Tooltip: ""
+		}
+
+		Hardcore: {
+			Label: Hardcore
+			Tooltip: ""
+		}
+
+		Creative: {
+			Label: Creative
+			Tooltip: ""
+		}
+	}
+}

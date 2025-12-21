@@ -1,0 +1,127 @@
+Configs: {
+	ServerConfig: {
+		GroupNumber: {
+			Tooltip: 无白名单被踢出时显示的QQ群号
+			Label: QQ群号
+		}
+
+		ShowProcessInPlayerList: {
+			Tooltip: 在线菜单中显示进度
+			Label: 显示进度
+		}
+
+		BanClientMods: {
+			Tooltip: 启用其中模组的玩家会被踢出服务器
+			Label: 禁用客户端模组
+		}
+
+		StartItems: {
+			Tooltip: 玩家新建角色后的物品
+			Label: 初始物品
+		}
+
+		SaveInterval: {
+			Tooltip: 云存档保存间隔
+			Label: 保存间隔 (秒)
+		}
+
+		Headers: {
+			SSC: SSC云存档
+			General: 通用
+		}
+
+		EnableWhiteList: {
+			Tooltip: 玩家加入服务器时会先检查白名单
+			Label: 启用白名单
+		}
+
+		DisplayName: 服务器配置
+
+		EnableSSC: {
+			Label: 启用SSC
+			Tooltip: 启用服务端云存档 (需要启用白名单)
+		}
+
+		DifficultyId: {
+			Label: 角色难度
+			Tooltip: SSC新角色难度
+		}
+
+		StartLifeMax: {
+			Label: 初始生命值
+			Tooltip: SSC新角色生命值
+		}
+
+		StartManaMax: {
+			Label: 初始魔力值
+			Tooltip: SSC新角色魔力值
+		}
+
+		SendBroadcastAfterSaveSuccess: {
+			// Label: Send Broadcast After Save Success
+			// Tooltip: ""
+		}
+
+		SendSuccessMessage: {
+			Label: 发送保存成功消息
+			Tooltip: SSC保存成功时发送消息
+		}
+	}
+
+	ClientConfig: {
+		GroupOpenId: {
+			Tooltip: 由机器人自动设置 (请勿修改或泄漏)
+			Label: 群唯一标识符
+		}
+
+		Token: {
+			Tooltip: 由机器人自动设置 (请勿修改或泄漏)
+			Label: 令牌
+		}
+
+		DisplayName: Bot连接配置
+	}
+
+	InitItem: {
+		Tooltip: 物品
+
+		ItemDefinition: {
+			Label: 物品
+			Tooltip: 物品
+		}
+
+		Stack: {
+			Label: 数量
+			Tooltip: 数量
+		}
+
+		Prefix: {
+			Label: 修饰语
+			Tooltip: 修饰语
+		}
+	}
+
+	PlayerDifficultyId: {
+		Tooltip: 角色难度
+
+		SoftCore: {
+			Label: 软核
+			Tooltip: 标准的泰拉瑞亚体验
+		}
+
+		MediumCore: {
+			Label: 中核
+			Tooltip: 死亡时掉落全部物品
+		}
+
+		Hardcore: {
+			Label: 硬核
+			Tooltip: 人物会永久死亡，并且在死亡时掉落所有物品
+		}
+
+		Creative: {
+			Label: 旅行
+			Tooltip: 开局时给额外的物品，允许复制物品，并且可以让游戏更加容易
+		}
+	}
+}
