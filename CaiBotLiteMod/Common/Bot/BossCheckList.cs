@@ -1,4 +1,4 @@
-﻿using CaiBotLiteMod.Moudles;
+﻿using CaiBotLiteMod.Common.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using Terraria.GameContent.ItemDropRules;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CaiBotLiteMod.Common;
+namespace CaiBotLiteMod.Common.Bot;
 
 public static class BossCheckList
 {

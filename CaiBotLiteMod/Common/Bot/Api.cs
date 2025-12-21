@@ -1,6 +1,7 @@
-﻿using CaiBotLiteMod.Enums;
-using CaiBotLiteMod.Hooks;
-using CaiBotLiteMod.Moudles;
+﻿using CaiBotLiteMod.Common.Hook;
+using CaiBotLiteMod.Common.Model;
+using CaiBotLiteMod.Common.Model.Enum;
+using CaiBotLiteMod.Common.Utils;
 using SixLabors.ImageSharp.Formats.Png;
 using System;
 using System.IO;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CaiBotLiteMod.Common;
+namespace CaiBotLiteMod.Common.Bot;
 
 public static class Api
 {
@@ -19,25 +20,25 @@ public static class Api
     {
         try
         {
-            var package = Package.Parse(receivedData);
+            var package = Packet.Parse(receivedData);
 
-            var packetWriter = new PackageWriter(package.Type, package.IsRequest, package.RequestId);
+            var packetWriter = new PacketWriter(package.Type, package.IsRequest, package.RequestId);
             switch (package.Type)
             {
                 case PackageType.UnbindServer:
                     var reason = package.Read<string>("reason");
-                    Utils.WriteLine("[CaiLite]BOT发送解绑命令...",ConsoleColor.Red);
-                    Utils.WriteLine($"原因: {reason}",ConsoleColor.Red);
-                    ModContent.GetInstance<ClientConfig>().Token = string.Empty;
-                    ModContent.GetInstance<ClientConfig>().GroupOpenId = string.Empty;
-                    
-                   
+                    Log.WriteLine("[CaiLite]BOT发送解绑命令...", ConsoleColor.Red);
+                    Log.WriteLine($"原因: {reason}", ConsoleColor.Red);
+                    ClientConfig.Instance.Token = string.Empty;
+                    ClientConfig.Instance.GroupOpenId = string.Empty;
+
+
                     CaiBotLiteMod.GenCode();
                     break;
                 case PackageType.CallCommand:
                     var command = package.Read<string>("command");
                     var userOpenId = package.Read<string>("user_open_id");
-                    var groupOpenId = package.Read<string>("group_open_id"); 
+                    var groupOpenId = package.Read<string>("group_open_id");
 
                     var caller = new CaiBotCommandCaller();
                     ExecuteCommandHook.StartHook = true;
@@ -55,12 +56,12 @@ public static class Api
                         ExecuteCommandHook.StartHook = false;
                     }
 
-                    Utils.WriteLine($"[CaiBotLite] \"{userOpenId}\"来自群\"{groupOpenId}\"执行了: {command}",ConsoleColor.Magenta);
+                    Log.WriteLine($"[CaiBotLite] \"{userOpenId}\"来自群\"{groupOpenId}\"执行了: {command}", ConsoleColor.Magenta);
                     packetWriter
                         .Write("output", ExecuteCommandHook.GetCommandOutput())
                         .Send();
                     break;
-                
+
                 case PackageType.PlayerList:
                     var bigBossList = BossCheckList.GetBossList().Where(x => x is { IsBoss: true, IsMiniboss: false }).OrderByDescending(x => x.Progression).ToList();
                     var onlineProcess = "不可用";
@@ -69,7 +70,6 @@ public static class Api
                         if (bigBossList[0].Downed())
                         {
                             onlineProcess = "已毕业";
-
                         }
                         else if (!bigBossList[^1].Downed())
                         {
@@ -86,14 +86,14 @@ public static class Api
                                 }
                             }
                         }
-
                     }
+
                     packetWriter
                         .Write("server_name", string.IsNullOrEmpty(Main.worldName) ? "地图还没加载捏~" : Main.worldName)
-                        .Write("player_list",Main.player.Where(x => x is { active: true }).Select(x => x.name))
+                        .Write("player_list", Main.player.Where(x => x is { active: true }).Select(x => x.name))
                         .Write("current_online", Main.player.Count(x => x is { active: true }))
                         .Write("max_online", Main.maxNetPlayers)
-                        .Write("process",ModContent.GetInstance<ServerConfig>().ShowProcessInPlayerList?onlineProcess:"")
+                        .Write("process", ServerConfig.Instance.ShowProcessInPlayerList ? onlineProcess : "")
                         .Send();
                     break;
 
@@ -123,10 +123,11 @@ public static class Api
                     break;
                 case PackageType.Whitelist:
                     var name = package.Read<string>("player_name");
+                    var isAdmin = package.Read<bool>("is_admin");
                     var whitelistResult = package.Read<WhiteListResult>("whitelist_result");
-                    Login.CheckWhitelist(name, whitelistResult);
+                    await Auth.Login(name, whitelistResult, isAdmin);
                     break;
-                
+
                 case PackageType.SelfKick:
                     var selfKickName = package.Read<string>("name");
                     var kickPlr = CaiBotLiteMod.Players.FirstOrDefault(x => x?.Name == selfKickName);
@@ -145,7 +146,7 @@ public static class Api
                         var imageBytes = ms.ToArray();
                         var base64 = Convert.ToBase64String(imageBytes);
                         packetWriter
-                            .Write("result",Utils.CompressBase64(base64))
+                            .Write("base64", FileTool.CompressBase64(base64))
                             .Send();
                     }
 
@@ -154,7 +155,7 @@ public static class Api
                     var mapFile = MapGenerator.CreateMapFile();
                     packetWriter
                         .Write("name", mapFile.Item2)
-                        .Write("base64", Utils.CompressBase64(mapFile.Item1))
+                        .Write("base64", FileTool.CompressBase64(mapFile.Item1))
                         .Send();
 
                     break;
@@ -177,20 +178,19 @@ public static class Api
 
                     packetWriter
                         .Write("name", zipName)
-                        .Write("base64", Utils.CompressBase64(Utils.FileToBase64String(zipName)))
+                        .Write("base64", FileTool.CompressBase64(FileTool.FileToBase64String(zipName)))
                         .Send();
 
                     break;
-
                 }
                 case PackageType.LookBag:
                     var lookBagName = package.Read<string>("player_name");
-                    var playerList3 = TSPlayer.FindByNameOrID("tsn:" + lookBagName);
-                    
+                    var playerList3 = TSPlayer.FindByNameOrId("tsn:" + lookBagName);
+
                     packetWriter
                         .Write("is_text", true)
                         .Write("name", lookBagName);
-                    
+
                     if (playerList3.Count != 0)
                     {
                         var plr = playerList3[0].TPlayer;
@@ -221,10 +221,10 @@ public static class Api
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[CaiBotLite] 处理BOT数据包时出错:\n" +
-                                    $"{ex}\n" +
-                                    $"源数据包: {receivedData}");
+            Log.WriteLine($"[CaiBotLite] 处理BOT数据包时出错:\n" +
+                          $"{ex}\n" +
+                          $"源数据包: {receivedData}",
+                ConsoleColor.Red);
         }
-        
     }
 }

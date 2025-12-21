@@ -1,4 +1,4 @@
-﻿using CaiBotLiteMod.Moudles;
+﻿using CaiBotLiteMod.Common.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,12 +6,12 @@ using System.Diagnostics;
 using System.Text;
 using Color = System.Drawing.Color;
 
-namespace CaiBotLiteMod;
+namespace CaiBotLiteMod.Common.Utils;
 
 /// <summary>
 ///     Provides tools for sending paginated output.
 /// </summary>
-public static class PaginationTools
+public static class PaginationTool
 {
     public delegate Tuple<string?, Color> LineFormatterDelegate(object lineData, int lineIndex, int pageNumber);
 
@@ -22,14 +22,8 @@ public static class PaginationTools
 
         if (dataToPaginateCount == 0)
         {
-            if (!player.RealPlayer)
-            {
-                player.SendSuccessMessage(settings.NothingToDisplayString);
-            }
-            else
-            {
-                player.SendMessage(settings.NothingToDisplayString, settings.HeaderTextColor);
-            }
+            player.SendMessage(settings.NothingToDisplayString, settings.HeaderTextColor);
+
 
             return;
         }
@@ -47,15 +41,8 @@ public static class PaginationTools
 
         if (settings.IncludeHeader)
         {
-            if (!player.RealPlayer)
-            {
-                player.SendSuccessMessage(string.Format(settings.HeaderFormat, pageNumber, pageCount));
-            }
-            else
-            {
-                player.SendMessage(string.Format(settings.HeaderFormat, pageNumber, pageCount),
-                    settings.HeaderTextColor);
-            }
+            player.SendMessage(string.Format(settings.HeaderFormat, pageNumber, pageCount),
+                settings.HeaderTextColor);
         }
 
         var listOffset = (pageNumber - 1) * settings.MaxLinesPerPage;
@@ -107,14 +94,7 @@ public static class PaginationTools
 
             if (lineMessage != null)
             {
-                if (!player.RealPlayer)
-                {
-                    player.SendInfoMessage(lineMessage);
-                }
-                else
-                {
-                    player.SendMessage(lineMessage, lineColor);
-                }
+                player.SendMessage(lineMessage, lineColor);
             }
         }
 
@@ -122,27 +102,13 @@ public static class PaginationTools
         {
             if (settings.NothingToDisplayString != null)
             {
-                if (!player.RealPlayer)
-                {
-                    player.SendSuccessMessage(settings.NothingToDisplayString);
-                }
-                else
-                {
-                    player.SendMessage(settings.NothingToDisplayString, settings.HeaderTextColor);
-                }
+                player.SendMessage(settings.NothingToDisplayString, settings.HeaderTextColor);
             }
         }
         else if (settings.IncludeFooter && pageNumber + 1 <= pageCount)
         {
-            if (!player.RealPlayer)
-            {
-                player.SendInfoMessage(string.Format(settings.FooterFormat, pageNumber + 1, pageNumber, pageCount));
-            }
-            else
-            {
-                player.SendMessage(string.Format(settings.FooterFormat, pageNumber + 1, pageNumber, pageCount),
-                    settings.FooterTextColor);
-            }
+            player.SendMessage(string.Format(settings.FooterFormat, pageNumber + 1, pageNumber, pageCount),
+                settings.FooterTextColor);
         }
     }
 

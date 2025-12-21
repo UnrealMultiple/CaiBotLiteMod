@@ -1,4 +1,4 @@
-﻿using CaiBotLiteMod.Enums;
+﻿using CaiBotLiteMod.Common.Model.Enum;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CaiBotLiteMod.Moudles;
+namespace CaiBotLiteMod.Common.Model;
 
 [Serializable]
-public class Package(Direction direction, PackageType type, bool isRequest, string? requestId)
+public class Packet(Direction direction, PackageType type, bool isRequest, string? requestId)
 {
     // {
     //     "version": "0.1.0",       // 数据包版本
@@ -24,15 +24,20 @@ public class Package(Direction direction, PackageType type, bool isRequest, stri
 
     [JsonProperty("version")] public Version Version => this.Type.GetVersion();
 
-    [JsonProperty("direction")] public Direction Direction = direction;
+    [JsonProperty("direction")]
+    public Direction Direction = direction;
 
-    [JsonProperty("type")] public PackageType Type = type;
+    [JsonProperty("type")]
+    public PackageType Type = type;
 
-    [JsonProperty("is_request")] public bool IsRequest = isRequest;
+    [JsonProperty("is_request")]
+    public bool IsRequest = isRequest;
 
-    [JsonProperty("request_id")] public string? RequestId = requestId;
+    [JsonProperty("request_id")]
+    public string? RequestId = requestId;
 
-    [JsonProperty("payload")] public Payload Payload = new ();
+    [JsonProperty("payload")]
+    public Payload Payload = new ();
 
     public T Read<T>(string key)
     {
@@ -49,9 +54,9 @@ public class Package(Direction direction, PackageType type, bool isRequest, stri
             }
             catch (JsonException ex)
             {
-                if (Enum.GetNames(typeof(T)).Any(name => string.Equals(name, "Unknown", StringComparison.OrdinalIgnoreCase)))
+                if (global::System.Enum.GetNames(typeof(T)).Any(name => string.Equals(name, "Unknown", StringComparison.OrdinalIgnoreCase)))
                 {
-                    return (T) Enum.Parse(typeof(T), "Unknown", true);
+                    return (T) global::System.Enum.Parse(typeof(T), "Unknown", true);
                 }
 
                 throw new InvalidCastException($"Cannot convert string '{stringValue}' to enum {typeof(T).Name}", ex);
@@ -74,16 +79,19 @@ public class Package(Direction direction, PackageType type, bool isRequest, stri
         return JsonConvert.SerializeObject(this, Formatting.None, Converter);
     }
 
-    public static Package Parse(string json)
+    public static Packet Parse(string json)
     {
-        return JsonConvert.DeserializeObject<Package>(json, Converter)!;
+        return JsonConvert.DeserializeObject<Packet>(json, Converter)!;
     }
 }
 
 public enum Direction
 {
-    [JsonProperty("to_server")] ToServer,
-    [JsonProperty("to_bot")] ToBot
+    [JsonProperty("to_server")]
+    ToServer,
+
+    [JsonProperty("to_bot")]
+    ToBot
 }
 
 public class Payload : Dictionary<string, object>

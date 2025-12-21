@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.Localization;
 
-namespace CaiBotLiteMod.Moudles;
+namespace CaiBotLiteMod.Common.Model;
 
 public class BossChecklistBossInfo
 {

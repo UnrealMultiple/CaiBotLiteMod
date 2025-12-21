@@ -1,9 +1,9 @@
-﻿using CaiBotLiteMod.Hooks;
+﻿using CaiBotLiteMod.Common.Hook;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CaiBotLiteMod.Moudles;
+namespace CaiBotLiteMod.Common.Model;
 
 public class CaiBotCommandCaller : CommandCaller
 {

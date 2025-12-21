@@ -2,7 +2,7 @@
 using System;
 using Terraria;
 
-namespace CaiBotLiteMod.Moudles;
+namespace CaiBotLiteMod.Common.Model;
 
 [JsonObject(MemberSerialization.OptIn)]
 public struct NetItem
@@ -113,11 +113,14 @@ public struct NetItem
     public static readonly Tuple<int, int>
         Loadout3Dye = new (Loadout3Armor.Item2, Loadout3Armor.Item2 + LoadoutDyeSlots);
 
-    [JsonProperty("netID")] private int _netId;
+    [JsonProperty("netID")]
+    private int _netId;
 
-    [JsonProperty("prefix")] private byte _prefixId;
+    [JsonProperty("prefix")]
+    private byte _prefixId;
 
-    [JsonProperty("stack")] private int _stack;
+    [JsonProperty("stack")]
+    private int _stack;
 
     //
     // 摘要:

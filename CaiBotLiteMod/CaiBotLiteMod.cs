@@ -1,6 +1,8 @@
 using CaiBotLiteMod.Common;
-using CaiBotLiteMod.Hooks;
-using CaiBotLiteMod.Moudles;
+using CaiBotLiteMod.Common.Bot;
+using CaiBotLiteMod.Common.Hook;
+using CaiBotLiteMod.Common.Model;
+using CaiBotLiteMod.Common.Utils;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -8,7 +10,7 @@ using Terraria.ModLoader;
 namespace CaiBotLiteMod;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class CaiBotLiteMod : Mod
+public partial class CaiBotLiteMod : Mod
 {
     internal static int InitCode = -1;
     internal static bool DebugMode;
@@ -27,9 +29,9 @@ public class CaiBotLiteMod : Mod
         DebugMode = Program.LaunchParameters.ContainsKey("-caidebug");
         WebsocketManager.Init();
         ExecuteCommandHook.Apply();
-        
-        
-        if (string.IsNullOrEmpty(ModContent.GetInstance<ClientConfig>().Token))
+
+
+        if (string.IsNullOrEmpty(ClientConfig.Instance.Token))
         {
             GenCode();
         }
@@ -37,6 +39,11 @@ public class CaiBotLiteMod : Mod
 
     public override void Unload()
     {
+        if (!Main.dedServ)
+        {
+            return;
+        }
+
         WebsocketManager.StopWebsocket();
         WebsocketManager.WebSocket.Dispose();
         ExecuteCommandHook.Dispose();
@@ -45,15 +52,15 @@ public class CaiBotLiteMod : Mod
 
     public static void GenCode()
     {
-        if (!string.IsNullOrEmpty(ModContent.GetInstance<ClientConfig>().Token))
+        if (!string.IsNullOrEmpty(ClientConfig.Instance.Token))
         {
-            Utils.WriteLine("[CaiBotLite]你已经绑定过了!", ConsoleColor.Red);
+            Log.WriteLine("[CaiBotLite]你已经绑定过了!", ConsoleColor.Red);
             return;
         }
-        
+
         InitCode = Main.rand.Next(10000000, 99999999);
-        Utils.Write("[CaiBotLite]您的服务器绑定码为: ", ConsoleColor.Green);
-        Utils.WriteLine(InitCode.ToString(), ConsoleColor.Red);
-        Utils.WriteLine("*你可以在启动服务器后使用'/生成绑定码'重新生成", ConsoleColor.Magenta);
+        Log.Write("[CaiBotLite]您的服务器绑定码为: ", ConsoleColor.Green);
+        Log.WriteLine(InitCode.ToString(), ConsoleColor.Red);
+        Log.WriteLine("*你可以在启动服务器后使用'/生成绑定码'重新生成", ConsoleColor.Magenta);
     }
 }

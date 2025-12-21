@@ -21,24 +21,3 @@ public class BindCodeCommand : ModCommand
         CaiBotLiteMod.GenCode();
     }
 }
-
-public class TestCommand : ModCommand
-{
-    public override CommandType Type
-        => CommandType.Console;
-
-    public override string Command
-        => "t";
-
-    public override string Description
-        => "Test";
-
-    public override void Action(CommandCaller caller, string input, string[] args)
-    {
-        Console.WriteLine(JsonConvert.SerializeObject(ModLoader.Mods.Where(i => i != null).Select(i => i.Name)));
-        var mod = ModLoader.GetMod("MagicStorage");
-        var asset = mod.Assets.GetLoadedAssets();
-
-        Console.WriteLine(asset.Length);
-    }
-}

@@ -1,3 +1,4 @@
+using CaiBotLiteMod.Common.Utils;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System;
@@ -11,27 +12,26 @@ using Terraria.ModLoader;
 using Image = SixLabors.ImageSharp.Image;
 
 
-namespace CaiBotLiteMod.Common;
+namespace CaiBotLiteMod.Common.Bot;
 
 internal static class MapGenerator
 {
-    private static bool _inited;
-    
+    private static bool _initialized;
+
     private static void Init()
     {
         try
         {
-            
             Main.mapEnabled = true;
             MapHelper.Initialize();
-            Main.Map = new WorldMap(Main.tile.Width, Main.tile.Height);
-            
-            Main.ActivePlayerFileData = new PlayerFileData{ Name = "CaiBot"};
+            Main.Map = new WorldMap(Main.ActiveWorldFileData.WorldSizeX, Main.ActiveWorldFileData.WorldSizeY);
+
+            Main.ActivePlayerFileData = new PlayerFileData { Name = "CaiBot" };
             var playerFileDataType = typeof(PlayerFileData);
             var pathField = playerFileDataType.GetField("_path", BindingFlags.NonPublic | BindingFlags.Instance);
             pathField!.SetValue(Main.ActivePlayerFileData, Main.GetPlayerPathFromName("CaiBot", false));
-            
-            
+
+
             Main.MapFileMetadata = FileMetadata.FromCurrentSettings(FileType.Map);
             Lang._mapLegendCache = new MapLegend(MapHelper.LookupCount());
             try
@@ -48,41 +48,40 @@ internal static class MapGenerator
             {
                 Main.dedServ = true;
             }
-            
-            _inited = true;
+
+            _initialized = true;
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Log.WriteLine(e.ToString(), ConsoleColor.Red);
         }
-
     }
-    
-    
+
 
     private static void LightWholeMap()
     {
-        if (!_inited)
+        if (!_initialized)
         {
             Init();
         }
-        for (var x = 0; x < Main.tile.Width; x++)
+
+        for (var x = 0; x < Main.ActiveWorldFileData.WorldSizeX; x++)
         {
-            for (var y = 0; y < Main.tile.Height; y++)
+            for (var y = 0; y < Main.ActiveWorldFileData.WorldSizeY; y++)
             {
-                var tile =MapHelper.CreateMapTile(x, y, byte.MaxValue);
+                var tile = MapHelper.CreateMapTile(x, y, byte.MaxValue);
                 Main.Map.SetTile(x, y, ref tile);
             }
         }
     }
-    
+
     internal static Image CreateMapImg()
     {
-        Image<Rgba32> image = new (Main.tile.Width, Main.tile.Height);
+        Image<Rgba32> image = new (Main.ActiveWorldFileData.WorldSizeX, Main.ActiveWorldFileData.WorldSizeY);
         LightWholeMap();
-        for (var x = 0; x < Main.tile.Width; x++)
+        for (var x = 0; x < Main.ActiveWorldFileData.WorldSizeX; x++)
         {
-            for (var y = 0; y < Main.tile.Height; y++)
+            for (var y = 0; y < Main.ActiveWorldFileData.WorldSizeY; y++)
             {
                 var tile = Main.Map[x, y];
                 var col = MapHelper.GetMapTileXnaColor(ref tile);
@@ -116,7 +115,6 @@ internal static class MapGenerator
             }
         }
 
-        return (Utils.FileToBase64String(zipPath), zipName);
-        
+        return (FileTool.FileToBase64String(zipPath), zipName);
     }
 }

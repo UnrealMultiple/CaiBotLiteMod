@@ -4,16 +4,16 @@ using Terraria;
 
 #pragma warning disable CS0414 // 字段已被赋值，但它的值从未被使用
 
-namespace CaiBotLiteMod.Common;
+namespace CaiBotLiteMod.Common.Bot;
 
 internal class LookBag
 {
     public string Name = "";
     public int Health = 0;
-    public int MaxHealth= 0;
-    public int Mana= 0;
-    public int MaxMana= 0;
-    public int QuestsCompleted= 0;
+    public int MaxHealth = 0;
+    public int Mana = 0;
+    public int MaxMana = 0;
+    public int QuestsCompleted = 0;
 
     public readonly List<List<int>> ItemList = [];
     public readonly List<int> Enhances = [];

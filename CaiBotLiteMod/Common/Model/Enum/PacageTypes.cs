@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CaiBotLiteMod.Enums;
+namespace CaiBotLiteMod.Common.Model.Enum;
 
 [Serializable]
 public enum PackageType
@@ -40,13 +40,13 @@ public static class PackageTypeExtension
             PackageType.MapImage => new Version(2025, 7, 18),
             PackageType.CallCommand => new Version(2025, 7, 18),
             PackageType.Unknown => new Version(2025, 7, 18),
-            PackageType.Whitelist => new Version(2025, 7, 18),
-            PackageType.UnbindServer => new Version(2025, 7, 25),
+            PackageType.Whitelist => new Version(2025, 12, 18),
+            PackageType.UnbindServer => new Version(2025, 7, 21),
             PackageType.Heartbeat => new Version(2025, 7, 25),
             PackageType.RankData => new Version(2025, 7, 25),
             PackageType.PluginList => new Version(2025, 7, 25),
-            PackageType.ShopBuy => new Version(2025, 7,25),
-            PackageType.ShopCondition => new Version(2025, 7,25),
+            PackageType.ShopBuy => new Version(2025, 7, 25),
+            PackageType.ShopCondition => new Version(2025, 7, 25),
             _ => new Version(2007, 5, 24)
         };
     }

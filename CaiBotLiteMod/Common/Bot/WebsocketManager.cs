@@ -1,4 +1,5 @@
-﻿using CaiBotLiteMod.Enums;
+﻿using CaiBotLiteMod.Common.Model.Enum;
+using CaiBotLiteMod.Common.Utils;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -12,14 +13,13 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CaiBotLiteMod.Common;
+namespace CaiBotLiteMod.Common.Bot;
 
 public static class WebsocketManager
 {
     public static ClientWebSocket WebSocket = null!;
 
     private const string BotServerUrl = "api.terraria.ink:22338";
-    //private const string BotServerUrl = "127.0.0.1:8080";
     internal static bool IsWebsocketConnected => WebSocket.State == WebSocketState.Open;
     private static bool _isStopWebsocket;
 
@@ -45,13 +45,13 @@ public static class WebsocketManager
             {
                 if (WebSocket.State == WebSocketState.Open)
                 {
-                    var packetWriter = new PackageWriter(PackageType.Heartbeat, false, null);
+                    var packetWriter = new PacketWriter(PackageType.Heartbeat, false, null);
                     packetWriter.Send();
                 }
             }
             catch
             {
-                Console.WriteLine("[CaiBotLite]心跳包发送失败!");
+                Log.WriteLine("[CaiBotLite]心跳包发送失败!", ConsoleColor.Red);
             }
         }
     }
@@ -63,13 +63,13 @@ public static class WebsocketManager
             try
             {
                 WebSocket = new ClientWebSocket();
-                while (string.IsNullOrEmpty(ModContent.GetInstance<ClientConfig>().Token))
+                while (string.IsNullOrEmpty(ClientConfig.Instance.Token))
                 {
                     await Task.Delay(TimeSpan.FromSeconds(10));
                     HttpClient client = new ();
                     client.Timeout = TimeSpan.FromSeconds(5.0);
                     var response = await client.GetAsync($"https://{BotServerUrl}/server/token/{CaiBotLiteMod.InitCode}");
-                    if (response.StatusCode != HttpStatusCode.OK || ModContent.GetInstance<ClientConfig>().Token != "")
+                    if (response.StatusCode != HttpStatusCode.OK || ClientConfig.Instance.Token != "")
                     {
                         continue;
                     }
@@ -78,27 +78,26 @@ public static class WebsocketManager
                     var json = JObject.Parse(responseBody);
                     var token = json["token"]!.ToString();
                     var groupOpenId = json["group_open_id"]!.ToString();
-                    ModContent.GetInstance<ClientConfig>().Token = token;
-                    ModContent.GetInstance<ClientConfig>().GroupOpenId = groupOpenId;
-                    ModContent.GetInstance<ClientConfig>().Save();
-                    Console.WriteLine("[CaiBotLite]被动绑定成功!");
+                    ClientConfig.Instance.Token = token;
+                    ClientConfig.Instance.GroupOpenId = groupOpenId;
+                    ClientConfig.Instance.Save();
+                    Log.WriteLine("[CaiBotLite]被动绑定成功!", ConsoleColor.Green);
                 }
 
-                WebSocket.Options.SetRequestHeader("authorization", $"Bearer {ModContent.GetInstance<ClientConfig>().Token}");
-                // await WebSocket.ConnectAsync(new Uri($"wss://{BotServerUrl}/server/ws/{Config.Settings.GroupOpenId}/tshock/{Config.Settings.Token}/"), CancellationToken.None);
-                await WebSocket.ConnectAsync(new Uri($"wss://{BotServerUrl}/server/ws/{ModContent.GetInstance<ClientConfig>().GroupOpenId}/tModLoader/"), CancellationToken.None);
+                WebSocket.Options.SetRequestHeader("authorization", $"Bearer {ClientConfig.Instance.Token}");
+                await WebSocket.ConnectAsync(new Uri($"wss://{BotServerUrl}/server/ws/{ClientConfig.Instance.GroupOpenId}/tModLoader/"), CancellationToken.None);
 
-               new PackageWriter(PackageType.Hello, false, null)
+                new PacketWriter(PackageType.Hello, false, null)
                     .Write("server_core_version", ModLoader.versionedName)
                     .Write("plugin_version", CaiBotLiteMod.PluginVersion)
                     .Write("game_version", ModLoader.versionedName)
-                    .Write("enable_whitelist", ModContent.GetInstance<ServerConfig>().EnableWhiteList)
+                    .Write("enable_whitelist", ServerConfig.Instance.EnableWhiteList)
                     .Write("system", RuntimeInformation.RuntimeIdentifier)
                     .Write("server_name", Main.worldName)
                     .Write("settings", new Dictionary<string, object>())
                     .Send();
 
-                Console.WriteLine("[CaiBotLite]Bot连接成功...");
+                Log.WriteLine("[CaiBotLite]Bot连接成功...", ConsoleColor.Green);
 
                 while (true)
                 {
@@ -113,15 +112,15 @@ public static class WebsocketManager
                         switch (statusCode)
                         {
                             case 4003:
-                                ModContent.GetInstance<ClientConfig>().Token = "";
-                                ModContent.GetInstance<ClientConfig>().Save();
-                                Console.WriteLine("[CaiBotLite]服务器认证失败, 请重新绑定!");
-                                Console.WriteLine($"原因({statusCode}): {result.CloseStatusDescription}");
+                                ClientConfig.Instance.Token = "";
+                                ClientConfig.Instance.Save();
+                                Log.WriteLine("[CaiBotLite]服务器认证失败, 请重新绑定!", ConsoleColor.Red);
+                                Log.WriteLine($"原因({statusCode}): {result.CloseStatusDescription}", ConsoleColor.Red);
                                 CaiBotLiteMod.GenCode();
                                 break;
                             default:
-                                Console.WriteLine("[CaiBotLite]Bot主动断开连接!");
-                                Console.WriteLine($"原因({statusCode}): {result.CloseStatusDescription}");
+                                Log.WriteLine("[CaiBotLite]Bot主动断开连接!", ConsoleColor.Red);
+                                Log.WriteLine($"原因({statusCode}): {result.CloseStatusDescription}", ConsoleColor.Red);
                                 break;
                         }
 
@@ -131,7 +130,7 @@ public static class WebsocketManager
                     var receivedData = Encoding.UTF8.GetString(buffer, 0, result.Count);
                     if (CaiBotLiteMod.DebugMode)
                     {
-                        Console.WriteLine($"[CaiBotLite]收到BOT数据包: {receivedData}");
+                        Log.WriteLine($"[CaiBotLite]收到BOT数据包: {receivedData}", ConsoleColor.Blue);
                     }
 
                     await Api.HandleMessageAsync(receivedData);
@@ -139,10 +138,10 @@ public static class WebsocketManager
             }
             catch (Exception ex)
             {
-                Console.WriteLine("[CaiBotLite]Bot断开连接...");
+                Log.WriteLine("[CaiBotLite]Bot断开连接...", ConsoleColor.Red);
                 if (!_isStopWebsocket)
                 {
-                    Console.WriteLine(ex.ToString());
+                    Log.WriteLine(ex.ToString(), ConsoleColor.Red);
                 }
             }
 

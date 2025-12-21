@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CaiBotLiteMod.Moudles;
+namespace CaiBotLiteMod.Common.Model;
 
 public class ModInfo(string name, Version version)
 {

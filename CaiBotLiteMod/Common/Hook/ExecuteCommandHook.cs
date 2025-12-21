@@ -1,11 +1,10 @@
-﻿using MonoMod.RuntimeDetour;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace CaiBotLiteMod.Hooks;
+namespace CaiBotLiteMod.Common.Hook;
 
 public static class ExecuteCommandHook
 {
@@ -13,14 +12,14 @@ public static class ExecuteCommandHook
 
     private static StringBuilder _outPut = new ();
 
-    private static readonly Hook WriteLineHook = new (
+    private static readonly MonoMod.RuntimeDetour.Hook WriteLineHook = new (
         typeof(Console).GetMethod(nameof(Console.WriteLine), [typeof(string)])!,
         typeof(ExecuteCommandHook).GetMethod(nameof(WriteLine), BindingFlags.Static | BindingFlags.NonPublic)!);
 
-    private static readonly Hook WriteHook = new (
+    private static readonly MonoMod.RuntimeDetour.Hook WriteHook = new (
         typeof(Console).GetMethod(nameof(Console.Write), [typeof(string)])!,
-        typeof(ExecuteCommandHook).GetMethod(nameof(Write), BindingFlags.Static| BindingFlags.NonPublic)!);
-    
+        typeof(ExecuteCommandHook).GetMethod(nameof(Write), BindingFlags.Static | BindingFlags.NonPublic)!);
+
 
     private static void WriteLine(Action<string> orig, string text)
     {
@@ -57,15 +56,15 @@ public static class ExecuteCommandHook
             return [];
         }
 
-      
+
         if (_outPut.Length > 0 && _outPut[0] == ':')
         {
             _outPut.Remove(0, 2);
         }
-        
+
         var lines = _outPut.ToString()
             .Split(["\r\n", "\n", "\r"], StringSplitOptions.None)
-            .Where(x=>x!="")
+            .Where(x => x != "")
             .ToList();
 
         return lines;

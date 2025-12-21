@@ -1,4 +1,4 @@
-﻿namespace CaiBotLiteMod.Enums;
+﻿namespace CaiBotLiteMod.Common.Model.Enum;
 
 public enum WhiteListResult
 {
