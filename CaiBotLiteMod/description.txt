@@ -1,1 +1,5 @@
-用于服务器与机器人对接
+简单易用的服务器管理机器人CaiBotLite的扩展模组
+支持服务端云存档(SSC)和简单信息查询
+
+文档: https://docs.terraria.ink/zh/other/CaiBotLite.html
+反馈群: 991556763

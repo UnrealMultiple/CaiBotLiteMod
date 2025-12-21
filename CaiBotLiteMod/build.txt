@@ -1,6 +1,7 @@
-displayName = CaiBotLite扩展插件
+displayName = CaiBotLite扩展模组
 author = Cai
 version = 2025.12.21
 dllReferences = SixLabors.ImageSharp,Newtonsoft.Json
 buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*, Old\*
 side = Both
+homepage = https://docs.terraria.ink/zh/other/CaiBotLite.html
