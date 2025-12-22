@@ -2,6 +2,7 @@
 using CaiBotLiteMod.Common.Model;
 using CaiBotLiteMod.Common.Model.Enum;
 using CaiBotLiteMod.Common.Utils;
+using MonoMod.Cil;
 using System;
 using System.IO;
 using Terraria;
@@ -16,12 +17,36 @@ public class PacketHook : ModSystem
     public override void Load()
     {
         On_MessageBuffer.GetData += On_MessageBufferOnGetData;
+        IL_MessageBuffer.GetData += IL_MessageBufferOnGetData;
     }
-
+    
     public override void Unload()
     {
         On_MessageBuffer.GetData -= On_MessageBufferOnGetData;
+        IL_MessageBuffer.GetData -= IL_MessageBufferOnGetData;
     }
+
+    private static void IL_MessageBufferOnGetData(ILContext il)
+    {
+        var cursor = new ILCursor(il);
+        // ReSharper disable once InvertIf
+        if (cursor.TryGotoNext(MoveType.Before,
+                x => x.MatchLdarg(0),
+                x => x.MatchLdfld(out _),
+                x => x.MatchLdsfld(out _),
+                x => x.MatchLdcI4(2),
+                x => x.MatchLdelemRef(),
+                x => x.MatchCallvirt(out _),
+                x => x.MatchCall(out _)))
+        {
+            for (var i = 0; i < 7; i++)
+            {
+                cursor.Remove();
+            }
+        }
+    }
+
+    
 
     private static void On_MessageBufferOnGetData(On_MessageBuffer.orig_GetData orig, MessageBuffer self, int start, int length, out int messageType)
     {
@@ -75,17 +100,6 @@ public class PacketHook : ModSystem
                     .Write("player_ip", player.IP)
                     .Write("player_uuid", player.UUID)
                     .Send();
-
-                break;
-            default:
-                if (player.State < 10 && messageType > 12 && messageType != 93 && messageType != 16 &&
-                    messageType != 42 && messageType != 50 && messageType != 38 && messageType != 68 &&
-                    messageType != 147 && messageType < 250)
-                {
-                    Log.WriteLine($"[CaiBotLite]玩家(Index: {player.Index},State: {player.State})发送无效数据包 (Type: {messageType})",
-                        ConsoleColor.Yellow);
-                    return;
-                }
 
                 break;
         }
