@@ -71,7 +71,6 @@ public class PacketHook : ModSystem
             case MessageID.RequestWorldData:
                 if (ServerConfig.Instance.EnableWhiteList)
                 {
-                    orig(self, start, length, out messageType);
                     return;
                 }
 
