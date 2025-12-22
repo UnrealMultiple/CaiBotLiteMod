@@ -5,6 +5,7 @@ using CaiBotLiteMod.Common.Utils;
 using MonoMod.Cil;
 using System;
 using System.IO;
+using System.Text;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -16,12 +17,20 @@ public class PacketHook : ModSystem
 {
     public override void Load()
     {
+        if (!Main.dedServ)
+        {
+            return;
+        }
         On_MessageBuffer.GetData += On_MessageBufferOnGetData;
         IL_MessageBuffer.GetData += IL_MessageBufferOnGetData;
     }
     
     public override void Unload()
     {
+        if (!Main.dedServ)
+        {
+            return;
+        }
         On_MessageBuffer.GetData -= On_MessageBufferOnGetData;
         IL_MessageBuffer.GetData -= IL_MessageBufferOnGetData;
     }
@@ -50,12 +59,6 @@ public class PacketHook : ModSystem
 
     private static void On_MessageBufferOnGetData(On_MessageBuffer.orig_GetData orig, MessageBuffer self, int start, int length, out int messageType)
     {
-        if (!Main.dedServ)
-        {
-            orig(self, start, length, out messageType);
-            return;
-        }
-
         BinaryReader reader = new (self.readerStream);
         reader.BaseStream.Position = start;
         var player = CaiBotLiteMod.Players[self.whoAmI]!;
@@ -72,6 +75,23 @@ public class PacketHook : ModSystem
                     return;
                 }
 
+                break;
+            case MessageID.SyncPlayer:
+                if (string.IsNullOrEmpty(player.Name))
+                {
+                    break;
+                }
+
+                reader.ReadByte();
+                reader.ReadByte();
+                reader.ReadByte();
+                
+                var name = reader.ReadString();
+                if (player.Name != name)
+                {
+                    return;
+                }
+                
                 break;
             case MessageID.ClientUUID:
                 player.UUID = reader.ReadString();
@@ -103,7 +123,6 @@ public class PacketHook : ModSystem
 
                 break;
         }
-
         orig(self, start, length, out messageType);
     }
 }

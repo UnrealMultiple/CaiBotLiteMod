@@ -45,7 +45,8 @@ public class TSPlayer
     /// <summary>
     ///     Initializes a new instance of the <see cref="TSPlayer" /> class.
     /// </summary>
-    /// <param name="index">The player's index in the server.</param>
+    /// <param>The player's index in the server.</param>
+    /// <param name="index"></param>
     public TSPlayer(int index)
     {
         this.Index = index;
@@ -55,7 +56,7 @@ public class TSPlayer
     }
 
     /// <summary>
-    ///     The players index in the player array( Main.players[] ).
+    ///     The players index in the player array.
     /// </summary>
     public int Index { get; protected set; }
 
