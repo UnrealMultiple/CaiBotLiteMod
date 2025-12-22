@@ -75,7 +75,7 @@ public static class SSCManager
             _ = await tplrFile.ReadAsync(tplrData);
 
             var data = await SSCComposer.Compose(plrData, tplrData);
-            return (data, (int)plrFile.Length);
+            return (data, (int) plrFile.Length);
         }
         catch (Exception e)
         {

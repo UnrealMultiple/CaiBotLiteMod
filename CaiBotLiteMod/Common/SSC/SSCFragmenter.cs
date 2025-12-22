@@ -19,7 +19,7 @@ internal static class SSCFragmenter
     {
         Start,
         Reading,
-        End,
+        End
     }
 
     public static async Task ReadAsync(BinaryReader reader, int whoami)
@@ -51,7 +51,7 @@ internal static class SSCFragmenter
                 var playerDataLength = reader.ReadInt32();
                 var md5 = reader.ReadString();
                 var currentMd5 = Convert.ToHexString(MD5.HashData(composedData));
-                
+
                 if (md5 != currentMd5)
                 {
                     Log.WriteLine("[CaiBotLite]接收云存档发生错误，MD5校验失败!", ConsoleColor.Red);

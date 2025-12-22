@@ -34,7 +34,7 @@ internal static class Auth
 
                     player.IsAdmin = isAdmin;
                     player.IsLoggedIn = true;
-                    
+
                     if (ServerConfig.Instance.EnableSSC)
                     {
                         if (SSCManager.ExistSSC(name))

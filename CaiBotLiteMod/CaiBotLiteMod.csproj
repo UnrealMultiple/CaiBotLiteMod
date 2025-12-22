@@ -8,15 +8,15 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
-      <Reference Include="Newtonsoft.Json">
-        <HintPath>lib\Newtonsoft.Json.dll</HintPath>
-      </Reference>
-      <Reference Include="SixLabors.ImageSharp">
-        <HintPath>lib\SixLabors.ImageSharp.dll</HintPath>
-      </Reference>
+        <Reference Include="Newtonsoft.Json">
+            <HintPath>lib\Newtonsoft.Json.dll</HintPath>
+        </Reference>
+        <Reference Include="SixLabors.ImageSharp">
+            <HintPath>lib\SixLabors.ImageSharp.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Update="tModLoader.CodeAssist" Version="0.1.5" />
+        <PackageReference Update="tModLoader.CodeAssist" Version="0.1.5"/>
     </ItemGroup>
 
 

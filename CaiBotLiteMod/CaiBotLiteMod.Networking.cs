@@ -14,7 +14,7 @@ partial class CaiBotLiteMod
         ClientMod,
         SSCSegment,
         ResetSSC,
-        DeleteSSC,
+        DeleteSSC
     }
 
     public override void HandlePacket(BinaryReader reader, int whoAmI)

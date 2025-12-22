@@ -67,15 +67,15 @@ public class ServerConfig : ModConfig
             message = NetworkText.FromLiteral("保存成功，白名单已关闭，无法保护配置文件!");
             return true;
         }
-        
+
         var plr = CaiBotLiteMod.Players[whoAmI];
-        
+
         if (plr is null)
         {
             message = NetworkText.FromLiteral("玩家是棍母");
             return false;
         }
-        
+
         if (!plr.IsAdmin)
         {
             message = NetworkText.FromLiteral("需要BOT管理员才能修改MOD配置");
@@ -84,7 +84,6 @@ public class ServerConfig : ModConfig
 
         message = NetworkText.FromLiteral("OKKKKKKKKK!");
         return true;
-
     }
 }
 
@@ -123,7 +122,7 @@ public enum PlayerDifficultyId : byte
     SoftCore = 0,
     MediumCore = 1,
     Hardcore = 2,
-    Creative = 3,
+    Creative = 3
 }
 
 public class InitItem

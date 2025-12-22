@@ -46,6 +46,7 @@ public class PacketHook : ModSystem
                     orig(self, start, length, out messageType);
                     return;
                 }
+
                 break;
             case MessageID.ClientUUID:
                 player.UUID = reader.ReadString();
@@ -77,14 +78,15 @@ public class PacketHook : ModSystem
 
                 break;
             default:
-                if (player.State < 10 && messageType > 12 && messageType != 93 && messageType != 16 && 
-                    messageType != 42 && messageType != 50 && messageType != 38 && messageType != 68 && 
+                if (player.State < 10 && messageType > 12 && messageType != 93 && messageType != 16 &&
+                    messageType != 42 && messageType != 50 && messageType != 38 && messageType != 68 &&
                     messageType != 147 && messageType < 250)
                 {
                     Log.WriteLine($"[CaiBotLite]玩家(Index: {player.Index},State: {player.State})发送无效数据包 (Type: {messageType})",
                         ConsoleColor.Yellow);
                     return;
                 }
+
                 break;
         }
 

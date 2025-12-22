@@ -53,7 +53,7 @@ public class TSPlayer
         this.IsLoggedIn = false;
         this.IsAdmin = false;
     }
-    
+
     /// <summary>
     ///     The players index in the player array( Main.players[] ).
     /// </summary>

@@ -14,17 +14,16 @@ internal static class Log
         var logger = ModContent.GetInstance<CaiBotLiteMod>().Logger;
         switch (color)
         {
-            
             case ConsoleColor.Blue:
             case ConsoleColor.Green:
             default:
                 logger.Info(value);
                 break;
-        
+
             case ConsoleColor.Red:
                 logger.Error(value);
                 break;
-    
+
             case ConsoleColor.Yellow:
                 logger.Warn(value);
                 break;
@@ -39,17 +38,16 @@ internal static class Log
         var logger = ModContent.GetInstance<CaiBotLiteMod>().Logger;
         switch (color)
         {
-            
             case ConsoleColor.Blue:
             case ConsoleColor.Green:
             default:
                 logger.Info(value);
                 break;
-        
+
             case ConsoleColor.Red:
                 logger.Error(value);
                 break;
-    
+
             case ConsoleColor.Yellow:
                 logger.Warn(value);
                 break;
