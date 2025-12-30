@@ -109,10 +109,12 @@ public static class SSCManager
 
     public static void Restore(byte[] data, int playerDataLength, bool spawn = false)
     {
-        var fileData = new PlayerFileData(Path.GetTempFileName(), false) { Metadata = FileMetadata.FromCurrentSettings(FileType.Player) };
+        Directory.CreateDirectory(PlayerPath);
+        var fileData = new PlayerFileData(Path.Combine(PlayerPath, "cai_ssc_cache.plr"), false) { Metadata = FileMetadata.FromCurrentSettings(FileType.Player) };
         fileData = Player.LoadPlayerFromStream(fileData, data[..playerDataLength], data[playerDataLength..]);
         fileData.Player.whoAmI = Main.LocalPlayer.whoAmI;
         fileData.SetAsActive();
+        
         if (spawn)
         {
             fileData.Player.Spawn(PlayerSpawnContext.SpawningIntoWorld);
@@ -144,9 +146,9 @@ public static class SSCManager
 
         var setupPlayerStatsAndInventoryBasedOnDifficultyMethod = typeof(UICharacterCreation).GetMethod("SetupPlayerStatsAndInventoryBasedOnDifficulty", BindingFlags.Instance | BindingFlags.NonPublic);
         setupPlayerStatsAndInventoryBasedOnDifficultyMethod!.Invoke(characterCreation, []);
-
-
-        var fileData = new PlayerFileData(Path.GetTempFileName(), false) { Metadata = FileMetadata.FromCurrentSettings(FileType.Player), Player = player };
+        
+        Directory.CreateDirectory(PlayerPath);
+        var fileData = new PlayerFileData(Path.Combine(PlayerPath, "cai_ssc_cache.plr"), false) { Metadata = FileMetadata.FromCurrentSettings(FileType.Player), Player = player };
 
         var playerData = Player.SavePlayerFile_Vanilla(fileData);
 
