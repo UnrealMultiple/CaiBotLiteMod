@@ -1,161 +1,101 @@
-﻿using System.Collections.Generic;
+﻿using CaiBotLiteMod.Common.SSC;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Terraria;
+using Terraria.ID;
 
 #pragma warning disable CS0414 // 字段已被赋值，但它的值从未被使用
 
 namespace CaiBotLiteMod.Common.Bot;
 
-internal class LookBag
+internal static class LookBag
 {
-    public string Name = "";
-    public int Health = 0;
-    public int MaxHealth = 0;
-    public int Mana = 0;
-    public int MaxMana = 0;
-    public int QuestsCompleted = 0;
-
-    public readonly List<List<int>> ItemList = [];
-    public readonly List<int> Enhances = [];
-    public List<int> Buffs = [];
-
-    // public static LookBag LookOffline(UserAccount acc, PlayerData data)
-    // {
-    //     var lookBagData = new LookBag
-    //     {
-    //         Name = acc.Name,
-    //         Health = data.health,
-    //         MaxHealth = data.maxHealth,
-    //         Mana = data.mana,
-    //         MaxMana = data.maxMana,
-    //         QuestsCompleted = data.questsCompleted
-    //     };
-    //     if (data.extraSlot == 1)
-    //     {
-    //         lookBagData.Enhances.Add(3335); // 3335 恶魔之心
-    //     }
-    //
-    //     if (data.unlockedBiomeTorches == 1)
-    //     {
-    //         lookBagData.Enhances.Add(5043); // 5043 火把神徽章
-    //     }
-    //
-    //     if (data.ateArtisanBread == 1)
-    //     {
-    //         lookBagData.Enhances.Add(5326); // 5326	工匠面包
-    //     }
-    //
-    //     if (data.usedAegisCrystal == 1)
-    //     {
-    //         lookBagData.Enhances.Add(5337); // 5337 生命水晶	永久强化生命再生 
-    //     }
-    //
-    //     if (data.usedAegisFruit == 1)
-    //     {
-    //         lookBagData.Enhances.Add(5338); // 5338 埃癸斯果	永久提高防御力 
-    //     }
-    //
-    //     if (data.usedArcaneCrystal == 1)
-    //     {
-    //         lookBagData.Enhances.Add(5339); // 5339 奥术水晶	永久提高魔力再生 
-    //     }
-    //
-    //     if (data.usedGalaxyPearl == 1)
-    //     {
-    //         lookBagData.Enhances.Add(5340); // 5340	银河珍珠	永久增加运气 
-    //     }
-    //
-    //     if (data.usedGummyWorm == 1)
-    //     {
-    //         lookBagData.Enhances.Add(5341); // 5341	黏性蠕虫	永久提高钓鱼技能  
-    //     }
-    //
-    //     if (data.usedAmbrosia == 1)
-    //     {
-    //         lookBagData.Enhances.Add(5342); // 5342	珍馐	永久提高采矿和建造速度 
-    //     }
-    //
-    //     if (data.unlockedSuperCart == 1)
-    //     {
-    //         lookBagData.Enhances.Add(5289); // 5289	矿车升级包
-    //     }
-    //
-    //     foreach (var i in data.inventory)
-    //     {
-    //         lookBagData.ItemList.Add(new List<int> { i.NetId, i.Stack });
-    //     }
-    //
-    //     lookBagData.Buffs = Utils.GetActiveBuffs(TShock.DB, acc.ID, acc.Name);
-    //     return lookBagData;
-    // }
-
-
-    public static string LookOnline(Player plr)
+    public static async Task<string> Look(string name)
     {
-        var msgs = new StringBuilder();
-        msgs.AppendLine($"玩家: {plr.name}");
-        msgs.AppendLine($"生命: {plr.statLife}/{plr.statLifeMax}");
-        msgs.AppendLine($"魔力: {plr.statMana}/{plr.statManaMax}");
-        msgs.AppendLine($"渔夫任务: {plr.anglerQuestsFinished} 次");
+        var player = Main.player.FirstOrDefault(p => p != null && p.name == name);
+        if (player != null)
+        {
+            return LookPlayer(player);
+        }
+
+        if (!SSCManager.ExistSSC(name))
+        {
+            return string.Empty;
+        }
+
+        var sscPlayer = await SSCManager.LoadSSCPlayer(name);
+        return sscPlayer != null ? LookPlayer(sscPlayer) : string.Empty;
+    }
+
+
+    private static string LookPlayer(Player plr)
+    {
+        var result = new StringBuilder();
+        result.AppendLine($"玩家: {plr.name}");
+        result.AppendLine($"生命: {plr.statLife}/{plr.statLifeMax}");
+        result.AppendLine($"魔力: {plr.statMana}/{plr.statManaMax}");
+        result.AppendLine($"渔夫任务: {plr.anglerQuestsFinished}次");
 
         List<string> enhance = [];
         if (plr.extraAccessory)
         {
-            enhance.Add(GetItemDesc(3335)); // 3335 恶魔之心
+            enhance.Add(GetItemDesc(ItemID.DemonHeart));
         }
 
         if (plr.unlockedBiomeTorches)
         {
-            enhance.Add(GetItemDesc(5043)); // 5043 火把神徽章
+            enhance.Add(GetItemDesc(ItemID.TorchGodsFavor));
         }
 
         if (plr.ateArtisanBread)
         {
-            enhance.Add(GetItemDesc(5326)); // 5326	工匠面包
+            enhance.Add(GetItemDesc(ItemID.ArtisanLoaf));
         }
 
         if (plr.usedAegisCrystal)
         {
-            enhance.Add(GetItemDesc(5337)); // 5337 生命水晶	永久强化生命再生 
+            enhance.Add(GetItemDesc(ItemID.AegisCrystal));
         }
 
         if (plr.usedAegisFruit)
         {
-            enhance.Add(GetItemDesc(5338)); // 5338 埃癸斯果	永久提高防御力 
+            enhance.Add(GetItemDesc(ItemID.AegisFruit));
         }
 
         if (plr.usedArcaneCrystal)
         {
-            enhance.Add(GetItemDesc(5339)); // 5339 奥术水晶	永久提高魔力再生 
+            enhance.Add(GetItemDesc(ItemID.ArcaneCrystal));
         }
 
         if (plr.usedGalaxyPearl)
         {
-            enhance.Add(GetItemDesc(5340)); // 5340	银河珍珠	永久增加运气 
+            enhance.Add(GetItemDesc(ItemID.GalaxyPearl));
         }
 
         if (plr.usedGummyWorm)
         {
-            enhance.Add(GetItemDesc(5341)); // 5341	黏性蠕虫	永久提高钓鱼技能  
+            enhance.Add(GetItemDesc(ItemID.GummyWorm));
         }
 
         if (plr.usedAmbrosia)
         {
-            enhance.Add(GetItemDesc(5342)); // 5342	珍馐	 永久提高采矿和建造速度 
+            enhance.Add(GetItemDesc(ItemID.Ambrosia));
         }
 
         if (plr.unlockedSuperCart)
         {
-            enhance.Add(GetItemDesc(5289)); // 5289	矿车升级包
+            enhance.Add(GetItemDesc(ItemID.PeddlersSatchel));
         }
 
         if (enhance.Count != 0)
         {
-            msgs.AppendLine("永久增强: " + string.Join(",", enhance));
+            result.AppendLine("永久增强: " + string.Join(",", enhance));
         }
         else
         {
-            msgs.AppendLine("永久增强: " + "啥都没有...");
+            result.AppendLine("永久增强: " + "啥都没有...");
         }
 
         List<string> inventory = [];
@@ -359,25 +299,25 @@ internal class LookBag
 
         if (inventory.Count != 0)
         {
-            msgs.AppendLine("背包：" + string.Join(",", inventory));
+            result.AppendLine("背包: " + string.Join(",", inventory));
         }
         else
         {
-            msgs.AppendLine("背包：啥都没有...");
+            result.AppendLine("背包: 啥都没有...");
         }
 
         if (trash.Count != 0)
         {
-            msgs.AppendLine("垃圾桶：" + string.Join(",", trash));
+            result.AppendLine("垃圾桶: " + string.Join(",", trash));
         }
         else
         {
-            msgs.AppendLine("垃圾桶：啥都没有...");
+            result.AppendLine("垃圾桶: 啥都没有...");
         }
 
         if (assist.Count != 0)
         {
-            msgs.AppendLine("钱币弹药：" + string.Join(",", assist));
+            result.AppendLine("钱币弹药: " + string.Join(",", assist));
         }
 
 
@@ -385,115 +325,115 @@ internal class LookBag
 
         if (armor.Count != 0)
         {
-            msgs.AppendLine($">装备{num}：" + string.Join(",", armor));
+            result.AppendLine($">装备{num}: " + string.Join(",", armor));
         }
 
 
         if (vanity.Count != 0)
         {
-            msgs.AppendLine($">时装{num}：" + string.Join(",", vanity));
+            result.AppendLine($">时装{num}: " + string.Join(",", vanity));
         }
 
 
         if (dye.Count != 0)
         {
-            msgs.AppendLine($">染料{num}：" + string.Join(",", dye));
+            result.AppendLine($">染料{num}: " + string.Join(",", dye));
         }
 
 
         if (armor1.Count != 0)
         {
-            msgs.AppendLine("装备1：" + string.Join(",", armor1));
+            result.AppendLine("装备1: " + string.Join(",", armor1));
         }
 
 
         if (vanity1.Count != 0)
         {
-            msgs.AppendLine("时装1：" + string.Join(",", vanity1));
+            result.AppendLine("时装1: " + string.Join(",", vanity1));
         }
 
 
         if (dye1.Count != 0)
         {
-            msgs.AppendLine("染料1：" + string.Join(",", dye1));
+            result.AppendLine("染料1: " + string.Join(",", dye1));
         }
 
 
         if (armor2.Count != 0)
         {
-            msgs.AppendLine("装备2：" + string.Join(",", armor2));
+            result.AppendLine("装备2: " + string.Join(",", armor2));
         }
 
 
         if (vanity2.Count != 0)
         {
-            msgs.AppendLine("时装2：" + string.Join(",", vanity2));
+            result.AppendLine("时装2: " + string.Join(",", vanity2));
         }
 
 
         if (dye2.Count != 0)
         {
-            msgs.AppendLine("染料2：" + string.Join(",", dye2));
+            result.AppendLine("染料2: " + string.Join(",", dye2));
         }
 
 
         if (armor3.Count != 0)
         {
-            msgs.AppendLine("装备3：" + string.Join(",", armor3));
+            result.AppendLine("装备3: " + string.Join(",", armor3));
         }
 
 
         if (vanity3.Count != 0)
         {
-            msgs.AppendLine("时装3：" + string.Join(",", vanity3));
+            result.AppendLine("时装3: " + string.Join(",", vanity3));
         }
 
 
         if (dye3.Count != 0)
         {
-            msgs.AppendLine("染料3：" + string.Join(",", dye3));
+            result.AppendLine("染料3: " + string.Join(",", dye3));
         }
 
 
         if (miscEquips.Count != 0)
         {
-            msgs.AppendLine("工具栏：" + string.Join(",", miscEquips));
+            result.AppendLine("工具栏: " + string.Join(",", miscEquips));
         }
 
 
         if (miscDyes.Count != 0)
         {
-            msgs.AppendLine("染料2：" + string.Join(",", miscDyes));
+            result.AppendLine("染料2: " + string.Join(",", miscDyes));
         }
 
 
         if (bank.Count != 0)
         {
-            msgs.AppendLine("储蓄罐：" + string.Join(",", bank));
+            result.AppendLine("储蓄罐: " + string.Join(",", bank));
         }
 
 
         if (bank2.Count != 0)
         {
-            msgs.AppendLine("保险箱：" + string.Join(",", bank2));
+            result.AppendLine("保险箱: " + string.Join(",", bank2));
         }
 
 
         if (bank3.Count != 0)
         {
-            msgs.AppendLine("护卫熔炉：" + string.Join(",", bank3));
+            result.AppendLine("护卫熔炉: " + string.Join(",", bank3));
         }
 
 
         if (bank4.Count != 0)
         {
-            msgs.AppendLine("虚空保险箱：" + string.Join(",", bank4));
+            result.AppendLine("虚空保险箱: " + string.Join(",", bank4));
         }
 
-        return string.Join("\n", msgs);
+        return string.Join("\n", result);
     }
 
-    public static string GetItemDesc(Item item, bool isFlag = false)
+    private static string GetItemDesc(Item item, bool isFlag = false)
     {
         if (item.netID == 0)
         {
@@ -503,24 +443,15 @@ internal class LookBag
         return GetItemDesc(item.netID, item.Name, item.stack, item.prefix, isFlag);
     }
 
-    public static string GetItemDesc(int id, bool isFlag = false)
+    private static string GetItemDesc(int id, bool isFlag = false)
     {
         return isFlag ? $"[i:{id}]" : $"[{Lang.GetItemNameValue(id)}]";
     }
 
-    public static string GetItemDesc(int id, string name, int stack, int prefix, bool isFlag = false)
+    private static string GetItemDesc(int id, string name, int stack, int prefix, bool isFlag = false)
     {
         if (isFlag)
         {
-            // https://terraria.fandom.com/wiki/Chat
-            // [i:29]   数量
-            // [i/s10:29]   数量
-            // [i/p57:4]    词缀
-            // 控制台显示 物品名称
-            // 4.4.0 -1.4.1.2   [i:4444]
-            // 4.5.0 -1.4.2.2   [女巫扫帚]
-            //ChatItemIsIcon = TShock.VersionNum.CompareTo(new Version(4, 5, 0, 0)) >= 0;
-            //Console.WriteLine($"ChatItemIsIcon:");
             if (stack > 1)
             {
                 return $"[i/s{stack}:{id}]";

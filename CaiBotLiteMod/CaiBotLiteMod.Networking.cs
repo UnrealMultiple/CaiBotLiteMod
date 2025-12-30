@@ -3,6 +3,7 @@ using CaiBotLiteMod.Common.SSC;
 using System;
 using System.IO;
 using Terraria;
+using Terraria.ID;
 
 namespace CaiBotLiteMod;
 

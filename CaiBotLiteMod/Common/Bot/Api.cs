@@ -184,19 +184,18 @@ public static class Api
                     break;
                 }
                 case PackageType.LookBag:
-                    var lookBagName = package.Read<string>("player_name");
-                    var playerList3 = TSPlayer.FindByNameOrId("tsn:" + lookBagName);
+                    var playerName = package.Read<string>("player_name");
 
                     packetWriter
                         .Write("is_text", true)
-                        .Write("name", lookBagName);
+                        .Write("name", playerName);
 
-                    if (playerList3.Count != 0)
+                    var result =await LookBag.Look(playerName);
+                    if (!string.IsNullOrEmpty(result))
                     {
-                        var plr = playerList3[0].TPlayer;
                         packetWriter
                             .Write("exist", true)
-                            .Write("text", LookBag.LookOnline(plr))
+                            .Write("text", result.Trim())
                             .Send();
                     }
                     else

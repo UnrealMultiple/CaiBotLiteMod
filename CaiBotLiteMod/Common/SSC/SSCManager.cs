@@ -9,13 +9,36 @@ using Terraria.Chat;
 using Terraria.GameContent.UI.States;
 using Terraria.IO;
 using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace CaiBotLiteMod.Common.SSC;
 
 public static class SSCManager
 {
-    private static readonly string SaveDirPath = Path.Combine(Main.SavePath, nameof(CaiBotLiteMod), Main.ActiveWorldFileData.UniqueId.ToString());
+    private static string SaveDirPath => Path.Combine(Main.SavePath, nameof(CaiBotLiteMod), Main.ActiveWorldFileData.UniqueId.ToString());
+    private static string PlayerPath => Path.Combine(Main.SavePath, nameof(CaiBotLiteMod));
+    public static async Task<Player?> LoadSSCPlayer(string playerName)
+    {
+        try
+        {
+            await using var plrFile = File.Open(Path.Combine(SaveDirPath, $"{playerName}.plr"), FileMode.Open);
+            await using var tplrFile = File.Open(Path.Combine(SaveDirPath, $"{playerName}.tplr"), FileMode.Open);
+
+            var plrData = new byte[plrFile.Length];
+            var tplrData = new byte[tplrFile.Length];
+            _ = await plrFile.ReadAsync(plrData);
+            _ = await tplrFile.ReadAsync(tplrData); 
+            var fileData = new PlayerFileData(Path.Combine(PlayerPath, "cai_look_cache.plr"), false) { Metadata = FileMetadata.FromCurrentSettings(FileType.Player) };
+            fileData = Player.LoadPlayerFromStream(fileData, plrData, tplrData);
+            return fileData.Player;
+        }
+        catch (Exception e)
+        {
+            Log.WriteLine($"[CaiBotLite]加载玩家实例时出错: {e}", ConsoleColor.Red);
+            return null;
+        }
+    }
 
     public static async void SaveSSC(int index, byte[] data, int playerDataLength)
     {
