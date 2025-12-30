@@ -14,7 +14,8 @@ partial class CaiBotLiteMod
         ClientMod,
         SSCSegment,
         ResetSSC,
-        DeleteSSC
+        DeleteSSC,
+        ConnectContinue
     }
 
     public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -45,6 +46,11 @@ partial class CaiBotLiteMod
             case MessageType.DeleteSSC:
                 SSCManager.DeleteSSC(Main.player[whoAmI].name);
                 break;
+            case MessageType.ConnectContinue:
+                NetMessage.SendData(MessageID.WorldData, whoAmI);
+                Main.SyncAnInvasion(whoAmI);
+                break;
+                
         }
     }
 }

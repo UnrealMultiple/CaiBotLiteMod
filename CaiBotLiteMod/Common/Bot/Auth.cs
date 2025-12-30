@@ -49,9 +49,12 @@ internal static class Auth
                             mp.Send(player.Index);
                         }
                     }
+                    else
+                    {
+                        NetMessage.SendData(MessageID.WorldData, player.Index);
+                        Main.SyncAnInvasion(player.Index);
+                    }
                     
-                    NetMessage.SendData(MessageID.WorldData, player.Index);
-                    Main.SyncAnInvasion(player.Index);
                     break;
                 }
                 case WhiteListResult.NotInWhitelist:

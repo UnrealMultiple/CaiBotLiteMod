@@ -94,6 +94,10 @@ public static class SSCManager
         {
             fileData.Player.Spawn(PlayerSpawnContext.SpawningIntoWorld);
         }
+        
+        var mp = ModContent.GetInstance<CaiBotLiteMod>().GetPacket();
+        mp.Write((byte) CaiBotLiteMod.MessageType.ConnectContinue);
+        mp.Send();
     }
 
     public static void Reset(bool spawn = false)
@@ -137,5 +141,9 @@ public static class SSCManager
         {
             player.Spawn(PlayerSpawnContext.SpawningIntoWorld);
         }
+        
+        var mp = ModContent.GetInstance<CaiBotLiteMod>().GetPacket();
+        mp.Write((byte) CaiBotLiteMod.MessageType.ConnectContinue);
+        mp.Send();
     }
 }
