@@ -16,6 +16,12 @@ public class SSCSystem : ModSystem
         On_Player.InternalSavePlayerFile += On_PlayerOnInternalSavePlayerFile;
         On_Player.KillMeForGood += On_PlayerOnKillMeForGood;
     }
+    
+    public override void Unload()
+    {
+        On_Player.InternalSavePlayerFile -= On_PlayerOnInternalSavePlayerFile;
+        On_Player.KillMeForGood -= On_PlayerOnKillMeForGood;
+    }
 
     private static void On_PlayerOnKillMeForGood(On_Player.orig_KillMeForGood orig, Player self)
     {
@@ -28,11 +34,6 @@ public class SSCSystem : ModSystem
         var mp = ModContent.GetInstance<CaiBotLiteMod>().GetPacket();
         mp.Write((byte) CaiBotLiteMod.MessageType.DeleteSSC);
         mp.Send();
-    }
-
-    public override void Unload()
-    {
-        On_Player.InternalSavePlayerFile -= On_PlayerOnInternalSavePlayerFile;
     }
 
     private int _timer;
