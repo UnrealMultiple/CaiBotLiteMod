@@ -5,7 +5,6 @@ using CaiBotLiteMod.Common.Utils;
 using MonoMod.Cil;
 using System;
 using System.IO;
-using System.Text;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

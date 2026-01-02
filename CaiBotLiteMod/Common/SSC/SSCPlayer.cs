@@ -12,13 +12,8 @@ public class SSCPlayer : ModPlayer
     public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath)
     {
         var items = new List<Item>();
-        foreach (var i in ServerConfig.Instance.StartItems)
+        foreach (var i in ServerConfig.Instance.StartItems.Where(i => !i.ItemDefinition.IsUnloaded))
         {
-            if (i.ItemDefinition.IsUnloaded)
-            {
-                continue;
-            }
-
             if (i.Prefix.IsUnloaded)
             {
                 i.Prefix = new PrefixDefinition(0);
