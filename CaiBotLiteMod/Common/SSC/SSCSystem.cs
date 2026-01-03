@@ -97,10 +97,13 @@ public class SSCSystem : ModSystem
 
 
             await SSCFragmenter.SendAsync(data, playerData.Length);
+            orig(playerFile);
         }
         catch (Exception e)
         {
             Log.WriteLine($"[CaiBotLite]压缩SSC数据时出错: {e}", ConsoleColor.Red);
         }
+
+        
     }
 }

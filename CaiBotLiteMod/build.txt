@@ -1,6 +1,6 @@
 displayName = CaiBotLite扩展模组
 author = Cai
-version = 2025.12.30
+version = 2026.01.03
 dllReferences = SixLabors.ImageSharp,Newtonsoft.Json
 buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*, Old\*
 side = Both

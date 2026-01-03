@@ -113,8 +113,8 @@ public static class SSCManager
         var fileData = new PlayerFileData(Path.Combine(PlayerPath, "cai_ssc_cache.plr"), false) { Metadata = FileMetadata.FromCurrentSettings(FileType.Player) };
         fileData = Player.LoadPlayerFromStream(fileData, data[..playerDataLength], data[playerDataLength..]);
         fileData.Player.whoAmI = Main.LocalPlayer.whoAmI;
+        fileData.MarkAsServerSide();
         fileData.SetAsActive();
-        
         if (spawn)
         {
             fileData.Player.Spawn(PlayerSpawnContext.SpawningIntoWorld);
@@ -161,6 +161,7 @@ public static class SSCManager
 
         var modPlayerData = stream.ToArray();
         fileData = Player.LoadPlayerFromStream(fileData, playerData, modPlayerData);
+        fileData.MarkAsServerSide();
         fileData.SetAsActive();
         if (spawn)
         {
