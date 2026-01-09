@@ -112,7 +112,7 @@ public static class SSCManager
         Directory.CreateDirectory(PlayerPath);
         var fileData = new PlayerFileData(Path.Combine(PlayerPath, "cai_ssc_cache.plr"), false) { Metadata = FileMetadata.FromCurrentSettings(FileType.Player) };
         fileData = Player.LoadPlayerFromStream(fileData, data[..playerDataLength], data[playerDataLength..]);
-        fileData.Player.whoAmI = Main.LocalPlayer.whoAmI;
+        fileData.Player.whoAmI = Main.myPlayer;
         fileData.MarkAsServerSide();
         fileData.SetAsActive();
         if (spawn)
@@ -130,8 +130,7 @@ public static class SSCManager
         // ReSharper disable once UseObjectOrCollectionInitializer
         var player = new Player();
         var characterCreation = new UICharacterCreation(player);
-
-        player.whoAmI = Main.LocalPlayer.whoAmI;
+     
         player.name = Main.LocalPlayer.name;
         player.difficulty = (byte) ServerConfig.Instance.DifficultyId;
         player.skinVariant = Main.LocalPlayer.skinVariant;
@@ -161,6 +160,7 @@ public static class SSCManager
 
         var modPlayerData = stream.ToArray();
         fileData = Player.LoadPlayerFromStream(fileData, playerData, modPlayerData);
+        fileData.Player.whoAmI = Main.myPlayer;
         fileData.MarkAsServerSide();
         fileData.SetAsActive();
         if (spawn)
